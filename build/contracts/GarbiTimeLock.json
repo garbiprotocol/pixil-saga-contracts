@@ -1,0 +1,75 @@
+{
+  "contractName": "GarbiTimeLock",
+  "abi": [],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/GarbiTimeLock.sol\":\"GarbiTimeLock\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/GarbiTimeLock.sol\":{\"keccak256\":\"0xd64aee055e9b258e6cebab6f29d1319f35589b5bde29bee9cea37a38dc2d4046\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0f1ad4580146a557c7e761173df9e090ea11db83521ee05a315fe87a39a26a80\",\"dweb:/ipfs/QmapqYyuJzRYokk23QWmfK33sMWCeKjkY42dMDyrVK4haK\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220a4aa2ebaef21664d60a05cc541bed74932461c3c1d245a91435499f8b5d96bce64736f6c63430008110033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220a4aa2ebaef21664d60a05cc541bed74932461c3c1d245a91435499f8b5d96bce64736f6c63430008110033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "58:27:0:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "58:27:0:-:0;;;;;",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\n\ncontract GarbiTimeLock\n{\n\n}",
+  "sourcePath": "/Applications/projects/garbi-contracts/contracts/GarbiTimeLock.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/GarbiTimeLock.sol",
+    "exportedSymbols": {
+      "GarbiTimeLock": [
+        2
+      ]
+    },
+    "id": 3,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:0"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "GarbiTimeLock",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 2,
+        "linearizedBaseContracts": [
+          2
+        ],
+        "name": "GarbiTimeLock",
+        "nameLocation": "67:13:0",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 3,
+        "src": "58:27:0",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:53:0"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.17+commit.8df45f5f.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.11",
+  "updatedAt": "2023-02-01T09:59:11.814Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

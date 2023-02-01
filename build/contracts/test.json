@@ -1,0 +1,75 @@
+{
+  "contractName": "test",
+  "abi": [],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/test.sol\":\"test\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/test.sol\":{\"keccak256\":\"0x144bf9a7e9ee4811b9bf342f56d7b1bdc9d87e3b23d7a27c7a79e23187ef4976\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f3cd9dab96a6c5690a375b1e9f2832049b66907369970dd8df71ce7ae84c3cec\",\"dweb:/ipfs/QmWUsHvtsj9RdE8FCys8u1LNw6BHVuGRsBtUnbMsgyWrCL\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ninterface test\n{\n\n} ",
+  "sourcePath": "/Applications/projects/garbi-contracts/contracts/interfaces/test.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/test.sol",
+    "exportedSymbols": {
+      "test": [
+        11
+      ]
+    },
+    "id": 12,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 10,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:2"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "test",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": true,
+        "id": 11,
+        "linearizedBaseContracts": [
+          11
+        ],
+        "name": "test",
+        "nameLocation": "67:4:2",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 12,
+        "src": "57:19:2",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:45:2"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.17+commit.8df45f5f.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.11",
+  "updatedAt": "2023-02-01T09:59:11.814Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
