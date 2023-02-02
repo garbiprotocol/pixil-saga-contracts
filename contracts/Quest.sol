@@ -78,11 +78,26 @@ contract Quest is Ownable
             delete ListResultAnswersUser[user][oldResultAnswer];
         }
 
-        for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
-        {
-            ListQuestionsUser[user][indexQuestion] = RandomNumber(indexQuestion, user);
-        }
+        uint256 from1 = 0;
+        uint256 to1 = TotalQuestionContract.div(TotalQuestionOnDay).sub(1);
 
+        uint256 from2 = to1.add(1);
+        uint256 to2 = from2.add(TotalQuestionContract.div(TotalQuestionOnDay).sub(1));
+
+        uint256 from3 = to2.add(1);
+        uint256 to3 = TotalQuestionContract.sub(1);
+
+        ListQuestionsUser[user][0] = RandomNumber(0, user, from1, to1);
+        ListQuestionsUser[user][1] = RandomNumber(1, user, from2, to2);
+        ListQuestionsUser[user][2] = RandomNumber(2, user, from3, to3);
+
+
+        // for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
+        // {
+        //     ListQuestionsUser[user][indexQuestion] = RandomNumber(indexQuestion, user, );
+        // }
+        // 0 - 10 // 3
+        // 0 -3, 4-6, 7 - 10
         // // test
         // ListQuestionsUser[user][0] = 0;
         // ListQuestionsUser[user][1] = 1;
@@ -166,9 +181,10 @@ contract Quest is Ownable
         }
     }
 
-    function RandomNumber(uint256 count, address user) public view returns(uint256)
+    function RandomNumber(uint256 count, address user, uint256 from, uint256 to) public view returns(uint256)
     {
-        uint256 randomHash = uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, count, user)));
-        return randomHash % (TotalQuestionContract);
+        uint256 seed = uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, block.gaslimit)));
+        uint256 randomHash = uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, count, seed, user)));
+        return randomHash % (to - from + 1) + from;
     }
 }

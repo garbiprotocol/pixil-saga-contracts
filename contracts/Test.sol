@@ -1,11 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./interfaces/ArbSys.sol";
+
 contract Test
 {
+    ArbSys public arbSys;
+
     mapping(uint256 => uint256) public ArraysRandom;
     uint256 public TotalQuestionContract = 3;
     uint256 public TotalQuestionOnDay = 3;
+
+    constructor(ArbSys _arbSys)
+    {
+        arbSys = _arbSys;
+    }
 
     function SetTotalQuestionContract(uint256 newTotalQuestionContract) public 
     {
@@ -33,5 +42,11 @@ contract Test
     {
         uint256 randomHash = uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, count, user)));
         return randomHash % (TotalQuestionContract + 1);
+    }
+
+    function Test002() public view returns(uint256)
+    {
+
+        return arbSys.arbBlockNumber();
     }
 }
