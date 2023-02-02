@@ -79,7 +79,11 @@ contract Quest is Ownable
         TimeTheNextToDoQuest[user] = block.timestamp.add(DelayToDoQuest);
     }
 
-    function GetQuestion(address user) public view returns(Question[] memory data)
+    function GetDataQuest(address user) public view returns(
+        Question[] memory data,
+        uint256 timeTheNextToDoQuest,
+        uint256 delayToDoQuest
+        )
     {
         data = new Question[](TotalQuestionOnDay);
         for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
@@ -92,6 +96,8 @@ contract Quest is Ownable
             data[indexQuestion].Answer2,
             data[indexQuestion].Answer3, ) = QuestionDataContract.ListQuestionsContract(questionNumber);
         }
+        timeTheNextToDoQuest = TimeTheNextToDoQuest[user];
+        delayToDoQuest = DelayToDoQuest;
     }
 
     function SubmidQuestions(address user, uint256[] calldata results) public
@@ -117,7 +123,7 @@ contract Quest is Ownable
         TimeTheNextSubmit[user] = TimeTheNextToDoQuest[user];
     }
 
-    function BonusToken(address user, uint256 totalNumberCorrect) public 
+    function BonusToken(address user, uint256 totalNumberCorrect) private 
     {
         uint256 bonusAnswerCorrect = 10;
         if(TokenEarn.balanceOf(address(this)) > totalNumberCorrect.mul(bonusAnswerCorrect))
