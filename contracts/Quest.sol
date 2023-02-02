@@ -17,10 +17,13 @@ contract Quest is Ownable
     mapping(address => uint256) public TimeTheNextToDoQuest;
     mapping(address => uint256) public TimeTheNextSubmit;
     mapping(address => mapping(uint256 => uint256)) public ListQuestionsUser;
+    mapping(address => mapping(uint256 => uint256)) public ListResultAnswersUser;
 
     uint256 public DelayToDoQuest = 0;
-    uint256 public TotalQuestionContract = 100;
+    uint256 public TotalQuestionContract = 10;
     uint256 public TotalQuestionOnDay = 3;
+
+    uint256 public BonusAnswerCorrect = 10;
 
     struct Question
     {
@@ -62,19 +65,28 @@ contract Quest is Ownable
         TotalQuestionOnDay = newTotalQuestionOnDay;
     }
 
-    function ToDoQuestOnDay(address user) public
+    function SetBonusAnswerCorrect(uint256 newBonusAnswerCorrect) public onlyOwner
+    {
+        BonusAnswerCorrect = newBonusAnswerCorrect;
+    }
+    function DoQuestOnDay(address user) public
     {
         require(block.timestamp > TimeTheNextToDoQuest[user], "Error To Do Quest: It's not time to ask quest");
 
-        // for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
-        // {
-        //     ListQuestionsUser[user][indexQuestion] = RandomNumber(indexQuestion);
-        // }
+        for(uint256 oldResultAnswer = 0; oldResultAnswer < TotalQuestionOnDay; oldResultAnswer++)
+        {
+            delete ListResultAnswersUser[user][oldResultAnswer];
+        }
 
-        // test
-        ListQuestionsUser[user][0] = 0;
-        ListQuestionsUser[user][1] = 1;
-        ListQuestionsUser[user][2] = 2;
+        for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
+        {
+            ListQuestionsUser[user][indexQuestion] = RandomNumber(indexQuestion, user);
+        }
+
+        // // test
+        // ListQuestionsUser[user][0] = 0;
+        // ListQuestionsUser[user][1] = 1;
+        // ListQuestionsUser[user][2] = 2;
 
         TimeTheNextToDoQuest[user] = block.timestamp.add(DelayToDoQuest);
     }
@@ -100,7 +112,7 @@ contract Quest is Ownable
         delayToDoQuest = DelayToDoQuest;
     }
 
-    function SubmidQuestions(address user, uint256[] calldata results) public
+    function SubmitQuestions(address user, uint256[] calldata results) public
     {
         require(block.timestamp > TimeTheNextSubmit[user], "Error Submit Question: It's not time to submit yet");
 
@@ -113,22 +125,22 @@ contract Quest is Ownable
 
             if(resultAnswerQuestionOfUser == resultAnswerQuestionInContract)
             {
+                ListResultAnswersUser[user][indexQuestion] = 1; // 1: true, 0: false;
                 totalNumberCorrect = totalNumberCorrect.add(1);
             }
             delete ListQuestionsUser[user][indexQuestion];
         }
 
-        if(totalNumberCorrect > 0) BonusToken(user, totalNumberCorrect);
+        if(totalNumberCorrect > 0) DoBonusToken(user, totalNumberCorrect);
 
         TimeTheNextSubmit[user] = TimeTheNextToDoQuest[user];
     }
 
-    function BonusToken(address user, uint256 totalNumberCorrect) private 
+    function DoBonusToken(address user, uint256 totalNumberCorrect) private 
     {
-        uint256 bonusAnswerCorrect = 10;
-        if(TokenEarn.balanceOf(address(this)) > totalNumberCorrect.mul(bonusAnswerCorrect))
+        if(TokenEarn.balanceOf(address(this)) >= totalNumberCorrect.mul(BonusAnswerCorrect))
         {
-            TokenEarn.transfer(user, totalNumberCorrect.mul(bonusAnswerCorrect));
+            TokenEarn.transfer(user, totalNumberCorrect.mul(BonusAnswerCorrect));
         }
         else
         {
@@ -136,9 +148,27 @@ contract Quest is Ownable
         }
     }  
 
-    function RandomNumber(uint256 count) public view returns(uint256)
+    function GetResultAnswers(address user) public view returns(
+        uint256[] memory data,
+        uint256 totalBonusToken
+    )
     {
-        uint256 randomHash = uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, count)));
-        return randomHash % (TotalQuestionContract + 1);
+        data =  new uint256[](TotalQuestionOnDay);
+        totalBonusToken = 0;
+
+        for(uint256 resultAnswers = 0; resultAnswers < TotalQuestionOnDay; resultAnswers++)
+        {
+            data[resultAnswers] = ListResultAnswersUser[user][resultAnswers];
+            if(ListResultAnswersUser[user][resultAnswers] == 1)
+            {
+                totalBonusToken = totalBonusToken.add(BonusAnswerCorrect);
+            }
+        }
+    }
+
+    function RandomNumber(uint256 count, address user) public view returns(uint256)
+    {
+        uint256 randomHash = uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, count, user)));
+        return randomHash % (TotalQuestionContract);
     }
 }
