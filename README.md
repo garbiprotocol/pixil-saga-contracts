@@ -1,5 +1,1 @@
 # garbi-contracts
-
-*** Quest: "0xaf76d0680066da633b5C01AA4EAD5d21e0A63583";
-*** QuestionData : "0xBaeF50cc93Afc84a942559d54D5bF240ad9eD707";
-*** GRB : "0x0847a22e3078d05a66Eb27AC35d7D67512A243c5"; BEP20

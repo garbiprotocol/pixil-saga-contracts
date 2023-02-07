@@ -7,12 +7,12 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract Quest is Ownable
+contract Question is Ownable
 {
     using SafeMath for uint256;
 
     IQuestionData public QuestionDataContract;
-    IERC20 public TokenEarn;
+    IERC20 public TokenReward;  // CyberCredit
 
     mapping(address => uint256) public TimeTheNextToDoQuest;
     mapping(address => uint256) public TimeTheNextSubmit;
@@ -34,10 +34,10 @@ contract Quest is Ownable
         string Answer3;
     }
 
-    constructor(IQuestionData questionDataContract, IERC20 tokenEarn) 
+    constructor(IQuestionData questionDataContract, IERC20 tokenReward) 
     {
         QuestionDataContract = questionDataContract;
-        TokenEarn = tokenEarn;
+        TokenReward = tokenReward;
     }
 
     function SetQuestionDataContract(IQuestionData newQuestionDataContract) public onlyOwner
@@ -45,9 +45,9 @@ contract Quest is Ownable
         QuestionDataContract = newQuestionDataContract;
     }
 
-    function SetTokenEarn(IERC20 newTokenEarn) public onlyOwner
+    function SetTokenReward(IERC20 newTokenReward) public onlyOwner
     {
-        TokenEarn = newTokenEarn;
+        TokenReward = newTokenReward;
     }
 
     function SetDelayToDoQuest(uint256 newDelayToDoQuest) public onlyOwner
@@ -90,18 +90,6 @@ contract Quest is Ownable
         ListQuestionsUser[user][0] = RandomNumber(0, user, from1, to1);
         ListQuestionsUser[user][1] = RandomNumber(1, user, from2, to2);
         ListQuestionsUser[user][2] = RandomNumber(2, user, from3, to3);
-
-
-        // for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
-        // {
-        //     ListQuestionsUser[user][indexQuestion] = RandomNumber(indexQuestion, user, );
-        // }
-        // 0 - 10 // 3
-        // 0 -3, 4-6, 7 - 10
-        // // test
-        // ListQuestionsUser[user][0] = 0;
-        // ListQuestionsUser[user][1] = 1;
-        // ListQuestionsUser[user][2] = 2;
 
         TimeTheNextToDoQuest[user] = block.timestamp.add(DelayToDoQuest);
     }
@@ -153,13 +141,13 @@ contract Quest is Ownable
 
     function DoBonusToken(address user, uint256 totalNumberCorrect) private 
     {
-        if(TokenEarn.balanceOf(address(this)) >= totalNumberCorrect.mul(BonusAnswerCorrect))
+        if(TokenReward.balanceOf(address(this)) >= totalNumberCorrect.mul(BonusAnswerCorrect))
         {
-            TokenEarn.transfer(user, totalNumberCorrect.mul(BonusAnswerCorrect));
+            TokenReward.transfer(user, totalNumberCorrect.mul(BonusAnswerCorrect));
         }
         else
         {
-            TokenEarn.transfer(user, TokenEarn.balanceOf(address(this)));
+            TokenReward.transfer(user, TokenReward.balanceOf(address(this)));
         }
     }  
 
