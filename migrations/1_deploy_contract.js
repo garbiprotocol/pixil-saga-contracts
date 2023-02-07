@@ -4,7 +4,7 @@ const Quest = artifacts.require("Quest");
 
 const Test = artifacts.require("Test");
 
-const QuestionData = "0xBaeF50cc93Afc84a942559d54D5bF240ad9eD707";
+const QuestionData = "0x6B6F886c2aC84A630cb1A89B12D0B168272379d3";
 const GRB = "0x0847a22e3078d05a66Eb27AC35d7D67512A243c5";
 
 module.exports = function(deployer) {

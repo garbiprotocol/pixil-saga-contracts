@@ -8,6 +8,11 @@ contract QuestionData is Ownable
 {
     mapping(uint256 => QuestInfo) public ListQuestionsContract;
 
+    event EventCreateQuestion(uint256 indexQuest, string question,
+        string answer0, string answer1,
+        string answer2, string answer3,
+        uint256 answerResult);
+
     struct QuestInfo
     {
         string Question;
@@ -26,6 +31,8 @@ contract QuestionData is Ownable
         string memory answer2, string memory answer3,
         uint256 answerResult) public onlyOwner
     {
+        require(answerResult <= 3, "invalid answer result");
+
         QuestInfo storage Quest = ListQuestionsContract[indexQuest];
 
         Quest.Question = question;
@@ -34,6 +41,7 @@ contract QuestionData is Ownable
         Quest.Answer2 = answer2;
         Quest.Answer3 = answer3;
         Quest.AnswerResult = answerResult;
-    }
 
+        emit EventCreateQuestion(indexQuest, question, answer0, answer1, answer2, answer3, answerResult);
+    }
 }
