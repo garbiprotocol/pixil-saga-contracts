@@ -1,0 +1,339 @@
+{
+  "contractName": "IQuestionData",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "indexQuest",
+          "type": "uint256"
+        }
+      ],
+      "name": "ListQuestionsContract",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "question",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "answer0",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "answer1",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "answer2",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "answer3",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "answerResult",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"indexQuest\",\"type\":\"uint256\"}],\"name\":\"ListQuestionsContract\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"question\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"answer0\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"answer1\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"answer2\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"answer3\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"answerResult\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IQuestionData.sol\":\"IQuestionData\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IQuestionData.sol\":{\"keccak256\":\"0xdfb986d9fc3c4b6efc0c6646745cb40f798c494390a877233bdfa82316a8d87b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3210c70b9df307fb52892480c81a9cfa08fb483ff99975d97ff90576c28749ae\",\"dweb:/ipfs/QmRioMGPmpojchH3f7sTSFqzN2Y7k2XbvENoKeJXSc9h7i\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ninterface IQuestionData\n{\n    function ListQuestionsContract(uint256 indexQuest) external pure returns(\n        string memory question,\n        string memory answer0,\n        string memory answer1,\n        string memory answer2,\n        string memory answer3,\n        uint256 answerResult\n    );\n} ",
+  "sourcePath": "/Applications/projects/garbi-contracts/contracts/interfaces/IQuestionData.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IQuestionData.sol",
+    "exportedSymbols": {
+      "IQuestionData": [
+        348
+      ]
+    },
+    "id": 349,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 330,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:2"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IQuestionData",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 348,
+        "linearizedBaseContracts": [
+          348
+        ],
+        "name": "IQuestionData",
+        "nameLocation": "67:13:2",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "functionSelector": "21681fec",
+            "id": 347,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "ListQuestionsContract",
+            "nameLocation": "96:21:2",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 333,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 332,
+                  "mutability": "mutable",
+                  "name": "indexQuest",
+                  "nameLocation": "126:10:2",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 347,
+                  "src": "118:18:2",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 331,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "118:7:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "117:20:2"
+            },
+            "returnParameters": {
+              "id": 346,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 335,
+                  "mutability": "mutable",
+                  "name": "question",
+                  "nameLocation": "183:8:2",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 347,
+                  "src": "169:22:2",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 334,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "169:6:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 337,
+                  "mutability": "mutable",
+                  "name": "answer0",
+                  "nameLocation": "215:7:2",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 347,
+                  "src": "201:21:2",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 336,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "201:6:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 339,
+                  "mutability": "mutable",
+                  "name": "answer1",
+                  "nameLocation": "246:7:2",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 347,
+                  "src": "232:21:2",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 338,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "232:6:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 341,
+                  "mutability": "mutable",
+                  "name": "answer2",
+                  "nameLocation": "277:7:2",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 347,
+                  "src": "263:21:2",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 340,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "263:6:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 343,
+                  "mutability": "mutable",
+                  "name": "answer3",
+                  "nameLocation": "308:7:2",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 347,
+                  "src": "294:21:2",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 342,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "294:6:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 345,
+                  "mutability": "mutable",
+                  "name": "answerResult",
+                  "nameLocation": "333:12:2",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 347,
+                  "src": "325:20:2",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 344,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "325:7:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "159:192:2"
+            },
+            "scope": 348,
+            "src": "87:265:2",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 349,
+        "src": "57:297:2",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:323:2"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.17+commit.8df45f5f.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.11",
+  "updatedAt": "2023-02-01T15:27:59.973Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
