@@ -18,6 +18,8 @@ contract Question is Ownable
     mapping(address => uint256) public TimeTheNextSubmit;
     mapping(address => mapping(uint256 => uint256)) public ListQuestionsUser;
     mapping(address => mapping(uint256 => uint256)) public ListResultAnswersUser;
+    mapping(address => uint256) public BlockReturnDoQuestion; // suport client
+    mapping(address => uint256) public BlockReturnSubmitQuestion; // suport client
 
     uint256 public DelayToDoQuest = 0;  // block
     uint256 public TotalQuestionContract = 10;
@@ -93,12 +95,14 @@ contract Question is Ownable
         ListQuestionsUser[user][2] = RandomNumber(2, user, from3, to3);
 
         TimeTheNextToDoQuest[user] = block.number.add(DelayToDoQuest);
+        BlockReturnDoQuestion[user] = block.number;
     }
 
     function GetDataQuest(address user) public view returns(
         Question[] memory data,
         uint256 timeTheNextToDoQuest,
-        uint256 delayToDoQuest
+        uint256 delayToDoQuest,
+        uint256 blockReturnDoQuestion
         )
     {
         data = new Question[](TotalQuestionOnDay);
@@ -114,6 +118,7 @@ contract Question is Ownable
         }
         timeTheNextToDoQuest = (TimeTheNextToDoQuest[user] < block.number) ? 0 : TimeTheNextToDoQuest[user].sub(block.number);
         delayToDoQuest = DelayToDoQuest;
+        blockReturnDoQuestion = BlockReturnDoQuestion[user];
     }
 
     function SubmitQuestions(uint256[] calldata results) public
@@ -139,6 +144,7 @@ contract Question is Ownable
         if(totalNumberCorrect > 0) DoBonusToken(user, totalNumberCorrect);
 
         TimeTheNextSubmit[user] = TimeTheNextToDoQuest[user];
+        BlockReturnSubmitQuestion[user] = block.number;
     }
 
     function DoBonusToken(address user, uint256 totalNumberCorrect) private 
@@ -155,7 +161,8 @@ contract Question is Ownable
 
     function GetResultAnswers(address user) public view returns(
         uint256[] memory data,
-        uint256 totalBonusToken
+        uint256 totalBonusToken,
+        uint256 blockReturnSubmitQuestion
     )
     {
         data =  new uint256[](TotalQuestionOnDay);
@@ -169,6 +176,7 @@ contract Question is Ownable
                 totalBonusToken = totalBonusToken.add(BonusAnswerCorrect);
             }
         }
+        blockReturnSubmitQuestion = BlockReturnSubmitQuestion[user];
     }
 
     function RandomNumber(uint256 count, address user, uint256 from, uint256 to) public view returns(uint256)
