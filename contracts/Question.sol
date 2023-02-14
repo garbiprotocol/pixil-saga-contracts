@@ -19,7 +19,7 @@ contract Question is Ownable
     mapping(address => mapping(uint256 => uint256)) public ListQuestionsUser;
     mapping(address => mapping(uint256 => uint256)) public ListResultAnswersUser;
 
-    uint256 public DelayToDoQuest = 0;
+    uint256 public DelayToDoQuest = 0;  // block
     uint256 public TotalQuestionContract = 10;
     uint256 public TotalQuestionOnDay = 3;
 
@@ -69,9 +69,10 @@ contract Question is Ownable
     {
         BonusAnswerCorrect = newBonusAnswerCorrect;
     }
-    function DoQuestOnDay(address user) public
+    function DoQuestOnDay() public
     {
-        require(block.timestamp > TimeTheNextToDoQuest[user], "Error To Do Quest: It's not time to ask quest");
+        address user = msg.sender;
+        require(block.number > TimeTheNextToDoQuest[user], "Error To Do Quest: It's not time to ask quest");
 
         for(uint256 oldResultAnswer = 0; oldResultAnswer < TotalQuestionOnDay; oldResultAnswer++)
         {
@@ -91,7 +92,7 @@ contract Question is Ownable
         ListQuestionsUser[user][1] = RandomNumber(1, user, from2, to2);
         ListQuestionsUser[user][2] = RandomNumber(2, user, from3, to3);
 
-        TimeTheNextToDoQuest[user] = block.timestamp.add(DelayToDoQuest);
+        TimeTheNextToDoQuest[user] = block.number.add(DelayToDoQuest);
     }
 
     function GetDataQuest(address user) public view returns(
@@ -111,13 +112,14 @@ contract Question is Ownable
             data[indexQuestion].Answer2,
             data[indexQuestion].Answer3, ) = QuestionDataContract.ListQuestionsContract(questionNumber);
         }
-        timeTheNextToDoQuest = TimeTheNextToDoQuest[user];
+        timeTheNextToDoQuest = (TimeTheNextToDoQuest[user] < block.number) ? 0 : TimeTheNextToDoQuest[user].sub(block.number);
         delayToDoQuest = DelayToDoQuest;
     }
 
-    function SubmitQuestions(address user, uint256[] calldata results) public
+    function SubmitQuestions(uint256[] calldata results) public
     {
-        require(block.timestamp > TimeTheNextSubmit[user], "Error Submit Question: It's not time to submit yet");
+        address user = msg.sender;
+        require(block.number > TimeTheNextSubmit[user], "Error Submit Question: It's not time to submit yet");
 
         uint256 totalNumberCorrect = 0;
         for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
