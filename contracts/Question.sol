@@ -18,10 +18,10 @@ contract Question is Ownable
     mapping(address => uint256) public TimeTheNextSubmit;
     mapping(address => mapping(uint256 => uint256)) public ListQuestionsUser;
     mapping(address => mapping(uint256 => uint256)) public ListResultAnswersUser;
-    mapping(address => uint256) public BlockReturnDoQuestion; // suport client
-    mapping(address => uint256) public BlockReturnSubmitQuestion; // suport client
+    // mapping(address => uint256) public BlockReturnDoQuestion; // suport client
+    // mapping(address => uint256) public BlockReturnSubmitQuestion; // suport client
 
-    uint256 public DelayToDoQuest = 0;  // block
+    uint256 public DelayToDoQuest = 10;  // block
     uint256 public TotalQuestionContract = 10;
     uint256 public TotalQuestionOnDay = 3;
 
@@ -95,36 +95,53 @@ contract Question is Ownable
         ListQuestionsUser[user][2] = RandomNumber(2, user, from3, to3);
 
         TimeTheNextToDoQuest[user] = block.number.add(DelayToDoQuest);
-        BlockReturnDoQuestion[user] = block.number;
+        // BlockReturnDoQuestion[user] = block.number;
     }
 
     function GetDataQuest(address user) public view returns(
         Question[] memory data,
         uint256 timeTheNextToDoQuest,
-        uint256 delayToDoQuest,
-        uint256 blockReturnDoQuestion
+        uint256 delayToDoQuest
+        // uint256 blockReturnDoQuestion
         )
     {
         data = new Question[](TotalQuestionOnDay);
-        for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
-        {
-            uint256 questionNumber = ListQuestionsUser[user][indexQuestion];
 
-            (data[indexQuestion].Question,
-            data[indexQuestion].Answer0,
-            data[indexQuestion].Answer1,
-            data[indexQuestion].Answer2,
-            data[indexQuestion].Answer3, ) = QuestionDataContract.ListQuestionsContract(questionNumber);
+        if(TimeTheNextToDoQuest[user] > block.number)
+        {
+            for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
+            {
+                uint256 questionNumber = ListQuestionsUser[user][indexQuestion];
+
+                (data[indexQuestion].Question,
+                data[indexQuestion].Answer0,
+                data[indexQuestion].Answer1,
+                data[indexQuestion].Answer2,
+                data[indexQuestion].Answer3, ) = QuestionDataContract.ListQuestionsContract(questionNumber);
+            }
         }
+        else 
+        {
+            for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
+            {
+                data[indexQuestion].Question = "";
+                data[indexQuestion].Answer0 = "";
+                data[indexQuestion].Answer1 = "";
+                data[indexQuestion].Answer2 = "";
+                data[indexQuestion].Answer3 = "";
+            }
+        }
+
         timeTheNextToDoQuest = (TimeTheNextToDoQuest[user] < block.number) ? 0 : TimeTheNextToDoQuest[user].sub(block.number);
         delayToDoQuest = DelayToDoQuest;
-        blockReturnDoQuestion = BlockReturnDoQuestion[user];
+        // blockReturnDoQuestion = BlockReturnDoQuestion[user];
     }
 
     function SubmitQuestions(uint256[] calldata results) public
     {
         address user = msg.sender;
         require(block.number > TimeTheNextSubmit[user], "Error Submit Question: It's not time to submit yet");
+        require(block.number <= TimeTheNextToDoQuest[user], "Error Submit Question: submission timeout");
 
         uint256 totalNumberCorrect = 0;
         for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
@@ -144,7 +161,7 @@ contract Question is Ownable
         if(totalNumberCorrect > 0) DoBonusToken(user, totalNumberCorrect);
 
         TimeTheNextSubmit[user] = TimeTheNextToDoQuest[user];
-        BlockReturnSubmitQuestion[user] = block.number;
+        // BlockReturnSubmitQuestion[user] = block.number;
     }
 
     function DoBonusToken(address user, uint256 totalNumberCorrect) private 
@@ -161,8 +178,8 @@ contract Question is Ownable
 
     function GetResultAnswers(address user) public view returns(
         uint256[] memory data,
-        uint256 totalBonusToken,
-        uint256 blockReturnSubmitQuestion
+        uint256 totalBonusToken
+        // uint256 blockReturnSubmitQuestion
     )
     {
         data =  new uint256[](TotalQuestionOnDay);
@@ -176,7 +193,7 @@ contract Question is Ownable
                 totalBonusToken = totalBonusToken.add(BonusAnswerCorrect);
             }
         }
-        blockReturnSubmitQuestion = BlockReturnSubmitQuestion[user];
+        // blockReturnSubmitQuestion = BlockReturnSubmitQuestion[user];
     }
 
     function RandomNumber(uint256 count, address user, uint256 from, uint256 to) public view returns(uint256)
