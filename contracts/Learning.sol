@@ -29,7 +29,13 @@ contract Learning is Ownable, IERC721Receiver
 
     mapping(uint256 => uint256) public RewardPerBlockOfLevel;
 
-    uint256 MAX_INT = 115792089237316195423570985008687907853269984665640564039457584007913129639935;
+    event OnJoinGame(address user, uint256 tokenId);
+    event OnOutGame(address user, uint256 tokenId);
+    event OnUpgrateLevelRobot(address user, uint256 tokenId, uint256 level);
+    event OnConfirmUpgrateLevelRobot(address user, uint256 tokenId, uint256 level);
+    event OnStartLearn(address user, uint256 tokenId, uint256 level, uint256 startBlockLearn, uint256 pendingBlockLearn);
+    event OnStopLearn(address user, uint256 tokenId, uint256 level, uint256 totalBlockLearn, uint256 stopBlockLearn);
+    event OnBonusReward(address user, uint256 AmountTokenReward);
 
     modifier IsEnableSystem()
     {
@@ -128,13 +134,21 @@ contract Learning is Ownable, IERC721Receiver
         Robot.safeTransferFrom(msg.sender, address(this), tokenId);
 
         RobotJoin[msg.sender] = tokenId;
+
+        emit OnJoinGame(msg.sender, tokenId);
     }
 
     function OutGame() public 
     {
         require(RobotJoin[msg.sender] > 0, "Error OutGame: Haven't joined the game");
 
-        StopLearn();
+        address user = msg.sender;
+
+        Learn storage data = DataUserLearn[user]; 
+        if (data.StartBlockLearn > data.StopBlockLearn) 
+        {
+            StopLearn();
+        }
         require(removeRobot(msg.sender) == true, "Error OutGame: removeRobot");
     }
 
@@ -152,6 +166,7 @@ contract Learning is Ownable, IERC721Receiver
 
         PendingBlockUpgrate[tokenId] = block.number.add(BlockUpgrate[level.add(1)]);
 
+        emit OnUpgrateLevelRobot(user, tokenId, level);
     }
 
     function ConfirmUpgrateLevelRobot() public IsEnableSystem
@@ -161,6 +176,8 @@ contract Learning is Ownable, IERC721Receiver
         require(PendingBlockUpgrate[tokenId] > 0, "Error ConfirmUpgrateLevelRobot: Validate");
         require(block.number >= PendingBlockUpgrate[tokenId], "Error ConfirmUpgrateLevelRobot: Time out");
         Robot.UpgrateLevel(tokenId);
+
+        emit OnConfirmUpgrateLevelRobot(user, tokenId, Robot.Level(tokenId));
     }
 
     function StartLearn() public IsEnableSystem 
@@ -179,6 +196,8 @@ contract Learning is Ownable, IERC721Receiver
         }
 
         data.StartBlockLearn = block.number;
+
+        emit OnStartLearn(user, tokenId, Robot.Level(tokenId), data.StartBlockLearn, data.PendingBlockLearn);
     }
 
     function StopLearn() public IsEnableSystem
@@ -201,6 +220,9 @@ contract Learning is Ownable, IERC721Receiver
             data.PendingBlockLearn = data.PendingBlockLearn.sub(totalBlockLearnedOfUser);
         }
         data.StopBlockLearn = block.number;
+
+        emit OnStopLearn(user, RobotJoin[user], Robot.Level(RobotJoin[user]), totalBlockLearnedOfUser, data.StopBlockLearn);
+
         DoBonusToken(user, totalBlockLearnedOfUser);
     }
 
@@ -283,19 +305,26 @@ contract Learning is Ownable, IERC721Receiver
         if(TokenReward.balanceOf(address(this)) >= totalBlockLearned.mul(rewardPerBlock))
         {
             TokenReward.transfer(user, totalBlockLearned.mul(rewardPerBlock));
+
+            emit OnBonusReward(user, totalBlockLearned.mul(rewardPerBlock));
         }
         else
         {
             TokenReward.transfer(user, TokenReward.balanceOf(address(this)));
+
+            emit OnBonusReward(user, TokenReward.balanceOf(address(this)));
         }
     }  
 
     function removeRobot(address user) private returns(bool)
     {
         if(RobotJoin[user] <= 0) return true;
-        Robot.safeTransferFrom(address(this), user, RobotJoin[user]);
+        uint256 tokenId =  RobotJoin[user];
+        Robot.safeTransferFrom(address(this), user, tokenId);
 
         RobotJoin[user] = 0;
+
+        emit OnOutGame(msg.sender, tokenId);
         return true;
     }
 }
