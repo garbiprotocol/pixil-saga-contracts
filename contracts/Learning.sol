@@ -16,10 +16,11 @@ contract Learning is Ownable, IERC721Receiver
     IERC20 public TokenReward;     // Reward
 
     mapping(address => Learn) public DataUserLearn;
-    mapping(address => uint256) public RobotJoin;
+    mapping(address => RobotData) public RobotJoin;
     mapping(uint256 => uint256) public PendingBlockUpgrate;
     // config
     bool public EnableSystem;
+    uint256 public DelayBlockOutGame;
 
     mapping(uint256 => uint256) public PriceUpgrate; 
     mapping(uint256 => uint256) public BlockUpgrate; 
@@ -45,9 +46,16 @@ contract Learning is Ownable, IERC721Receiver
     
     struct Learn
     {
+        bool Learning;
         uint256 StartBlockLearn;
         uint256 StopBlockLearn;
         uint256 PendingBlockLearn;
+    }
+
+    struct RobotData
+    {
+        uint256 BlockJoin;
+        uint256 TokenId;
     }
 
     constructor(
@@ -60,6 +68,7 @@ contract Learning is Ownable, IERC721Receiver
         EnableSystem = true;
         
         // Test
+        DelayBlockOutGame = 50;
         TotalBlockLearn = 30;       
         DelayBlockLearn = 10;
 
@@ -98,6 +107,11 @@ contract Learning is Ownable, IERC721Receiver
         EnableSystem = true;
     }
 
+    function SetDelayBlockOutGame(uint256 value) public onlyOwner 
+    {
+        DelayBlockOutGame = value;
+    }
+
     function SetMaxLevel(uint256 maxLevel) public onlyOwner 
     {
         MaxLevel = maxLevel;
@@ -128,23 +142,26 @@ contract Learning is Ownable, IERC721Receiver
 
     function JoinGame(uint256 tokenId) public IsEnableSystem
     {
-        require(Robot.ownerOf(tokenId) == msg.sender, "Error JoinGame: Invalid token");
-        require(removeRobot(msg.sender) == true, "Error JoinGame: remove");
+        address user = msg.sender;
+        require(Robot.ownerOf(tokenId) == user, "Error JoinGame: Invalid token");
+        require(removeRobot(user) == true, "Error JoinGame: remove");
 
-        Robot.safeTransferFrom(msg.sender, address(this), tokenId);
+        Robot.safeTransferFrom(user, address(this), tokenId);
 
-        RobotJoin[msg.sender] = tokenId;
+        RobotData storage robotData = RobotJoin[user];
+        robotData.BlockJoin = block.number;
+        robotData.TokenId = tokenId;
 
         emit OnJoinGame(msg.sender, tokenId);
     }
 
     function OutGame() public 
     {
-        require(RobotJoin[msg.sender] > 0, "Error OutGame: Haven't joined the game");
-
         address user = msg.sender;
+        RobotData memory robotData = RobotJoin[user];
+        require(robotData.TokenId != 0, "Error OutGame: Haven't joined the game");
 
-        Learn storage data = DataUserLearn[user]; 
+        Learn memory data = DataUserLearn[user]; 
         if (data.StartBlockLearn > data.StopBlockLearn) 
         {
             StopLearn();
@@ -155,7 +172,8 @@ contract Learning is Ownable, IERC721Receiver
     function UpgrateLevelRobot() public IsEnableSystem
     {
         address user = msg.sender;
-        uint256 tokenId = RobotJoin[user];
+        RobotData memory robotData = RobotJoin[user];
+        uint256 tokenId = robotData.TokenId;
         require(tokenId != 0, "Error UpgrateLevelRobot: Invalid tokenId");
 
         uint256 level = Robot.Level(tokenId);
@@ -172,9 +190,11 @@ contract Learning is Ownable, IERC721Receiver
     function ConfirmUpgrateLevelRobot() public IsEnableSystem
     {
         address user = msg.sender;
-        uint256 tokenId = RobotJoin[user];
+        RobotData memory robotData = RobotJoin[user];
+        uint256 tokenId = robotData.TokenId;
         require(PendingBlockUpgrate[tokenId] > 0, "Error ConfirmUpgrateLevelRobot: Validate");
         require(block.number >= PendingBlockUpgrate[tokenId], "Error ConfirmUpgrateLevelRobot: Time out");
+        PendingBlockUpgrate[tokenId] = 0;
         Robot.UpgrateLevel(tokenId);
 
         emit OnConfirmUpgrateLevelRobot(user, tokenId, Robot.Level(tokenId));
@@ -183,12 +203,13 @@ contract Learning is Ownable, IERC721Receiver
     function StartLearn() public IsEnableSystem 
     {
         address user = msg.sender;
-        uint256 tokenId = RobotJoin[user];
+        RobotData memory robotData = RobotJoin[user];
+        uint256 tokenId = robotData.TokenId;
         require(tokenId != 0, "Error StartLearn: Invalid tokenId");
 
         Learn storage data = DataUserLearn[user]; 
         require(data.StartBlockLearn < block.number, "Error StartLearn: Time out");
-        require(data.StartBlockLearn <= data.StopBlockLearn, "Error StartLearn: Learning");
+        require(data.Learning == false, "Error StartLearn: Learning");
 
         if(data.PendingBlockLearn == 0)
         {
@@ -196,6 +217,7 @@ contract Learning is Ownable, IERC721Receiver
         }
 
         data.StartBlockLearn = block.number;
+        data.Learning = true;
 
         emit OnStartLearn(user, tokenId, Robot.Level(tokenId), data.StartBlockLearn, data.PendingBlockLearn);
     }
@@ -205,7 +227,7 @@ contract Learning is Ownable, IERC721Receiver
         address user = msg.sender;
 
         Learn storage data = DataUserLearn[user]; 
-        require(data.StartBlockLearn > data.StopBlockLearn, "Error StopLearn: Not learning");
+        require(data.Learning == true, "Error StopLearn: Not learning");
 
         uint256 totalBlockLearnedOfUser = block.number.sub(data.StartBlockLearn);
         if(totalBlockLearnedOfUser >= data.PendingBlockLearn)
@@ -219,9 +241,8 @@ contract Learning is Ownable, IERC721Receiver
         {
             data.PendingBlockLearn = data.PendingBlockLearn.sub(totalBlockLearnedOfUser);
         }
+        data.Learning = false;
         data.StopBlockLearn = block.number;
-
-        emit OnStopLearn(user, RobotJoin[user], Robot.Level(RobotJoin[user]), totalBlockLearnedOfUser, data.StopBlockLearn);
 
         DoBonusToken(user, totalBlockLearnedOfUser);
     }
@@ -231,19 +252,22 @@ contract Learning is Ownable, IERC721Receiver
         uint256 tokenId,
         uint256 levelRobotJoin,
         uint256 blockNumber,
+        bool learning,
         uint256 startBlockLearn,
         uint256 stopBlockLearn,
         uint256 pendingBlockLearn,
         uint256 rewardPerDay,
-        uint256 remainingBlockUpgrate
+        uint256 pendingBlockUpgrate
     )
     {
         cyberCreditBalance = TokenReward.balanceOf(user);
-        tokenId = RobotJoin[user];
+        RobotData memory robotData = RobotJoin[user];
+        tokenId = robotData.TokenId;
         levelRobotJoin = Robot.Level(tokenId);
         blockNumber = block.number;
 
-        Learn storage data = DataUserLearn[user];
+        Learn memory data = DataUserLearn[user];
+        learning = data.Learning;
         startBlockLearn = data.StartBlockLearn;
         pendingBlockLearn = data.PendingBlockLearn;
         stopBlockLearn = data.StopBlockLearn;
@@ -263,7 +287,7 @@ contract Learning is Ownable, IERC721Receiver
                                 TotalBlockLearn.mul(RewardPerBlockOfLevel[levelRobotJoin]);
         }
 
-        remainingBlockUpgrate  = PendingBlockUpgrate[tokenId];
+        pendingBlockUpgrate  = PendingBlockUpgrate[tokenId];
         
     }
 
@@ -272,7 +296,7 @@ contract Learning is Ownable, IERC721Receiver
         uint256[] memory priceUpgrateLevel,
         uint256 totalBlockLearn,
         uint256[] memory rewardPerBlockOfLevel,
-        uint256[] memory pendingBlockUpgrate
+        uint256[] memory blockUpgrate
     )
     {
         maxLevel = MaxLevel;
@@ -291,16 +315,18 @@ contract Learning is Ownable, IERC721Receiver
             rewardPerBlockOfLevel[level] = RewardPerBlockOfLevel[level];
         }
 
-        pendingBlockUpgrate = new uint256[](maxLevel.add(1));
+        blockUpgrate = new uint256[](maxLevel.add(1));
         for(uint level = 0; level <= maxLevel; level++)
         {
-            pendingBlockUpgrate[level] = PendingBlockUpgrate[level];
+            blockUpgrate[level] = BlockUpgrate[level];
         }
     }
 
     function DoBonusToken(address user, uint256 totalBlockLearned) private 
     {
-        uint256 level = Robot.Level((RobotJoin[user]));
+        RobotData memory robotData = RobotJoin[user];
+        uint256 tokenId = robotData.TokenId;
+        uint256 level = Robot.Level(tokenId);
         uint256 rewardPerBlock = RewardPerBlockOfLevel[level];
         if(TokenReward.balanceOf(address(this)) >= totalBlockLearned.mul(rewardPerBlock))
         {
@@ -318,11 +344,15 @@ contract Learning is Ownable, IERC721Receiver
 
     function removeRobot(address user) private returns(bool)
     {
-        if(RobotJoin[user] <= 0) return true;
-        uint256 tokenId =  RobotJoin[user];
+        RobotData storage robotData = RobotJoin[user];
+        uint256 tokenId = robotData.TokenId;
+
+        if(tokenId == 0) return true;
+        
+        require(robotData.BlockJoin.add(DelayBlockOutGame) <= block.number, "Error removeRobot: Time out");
         Robot.safeTransferFrom(address(this), user, tokenId);
 
-        RobotJoin[user] = 0;
+        robotData.TokenId = 0;
 
         emit OnOutGame(msg.sender, tokenId);
         return true;
