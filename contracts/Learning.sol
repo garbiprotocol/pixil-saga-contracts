@@ -9,75 +9,13 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import "./interfaces/IRobot.sol";
 
-/**
-The Learning smart contract is a decentralized application built on the Ethereum blockchain.
-Its purpose is to allow users to learn by interacting with their NFT robots.
-Users can join the game by transferring their NFT robots to the contract, 
-which will then start a learning process based on the robot's level. 
-Users can upgrade their robots' level by paying a certain amount of token and 
-waiting for a certain period of time, which will be used to improve their 
-learning capabilities. The contract also rewards users with tokens for participating 
-in the learning process.
-
-Libraries
-The contract uses several libraries provided by the OpenZeppelin framework, 
-including SafeMath, Ownable, Pausable, IERC20, and IERC721Receiver. 
-These libraries provide additional functionality and security to the contract.
-
-State Variables
-- IRobot and IERC20 are imported from the OpenZeppelin library 
-and used to handle NFTs and ERC20 tokens.
-
-- Learning is an Ownable, Pausable contract that implements the 
-IERC721Receiver interface.
-
--DataUserLearn is a mapping that stores the LearnData of each user.
--
-RobotJoinGameOfUser is a mapping that stores the RobotData of each user.
-
--PendingBlockUpgradeLevelRobotNFT is a mapping that stores the block number 
-of the pending level upgrade for each robot NFT.
-
--DelayBlockRobotNFTOutGame is the number of blocks a user has to wait before 
-they can remove their NFT from the game.
-
--PriceUpgradeLevelRobotNFT is a mapping that stores the price to upgrade each 
-level of robot NFT.
-
--BlockUpgradeLevelRobotNFT is a mapping that stores the number of blocks 
-needed to upgrade each level of robot NFT.
-
--MaxLevelOfRobotNFTInGame is the maximum level of robot NFT that can join the game.
-
--DelayBlockLearnNextTime is the number of blocks a user has to wait before 
-they can start learning again.
-
--TotalBlockLearnEachTime is the total number of blocks a user needs to learn to earn rewards.
-
--RewardPerBlockOfLevel is a mapping that stores the reward for each block of 
-learning based on the robot NFT level.
-
-Structs
--LearnData: a struct that tracks a user's current learning progress
-
--Learning: a boolean that indicates whether the user is currently in a learning session
-
--StartBlockLearn: the block at which the user started the current learning session
-
--StopBlockLearn: the block at which the user stopped the current learning session
-
--PendingBlockLearn: the number of blocks remaining until the current learning session is complete
-
--RobotData: a struct that tracks a user's current NFT robot and the block at which it was added to the game
-
--BlockJoin: the block at which the NFT robot was added to the game
-
--TokenId: the ID of the NFT robot
-
--The contract includes several functions that allow users to join and exit the game, 
-upgrade their NFTs, and start learning. The contract also includes several functions
-that allow the owner to set the configuration parameters of the game.
- */
+    /**
+    This contract allows users to learn by using their NFT robots. 
+    Users can join the game by transferring their robots to the contract, 
+    and the contract will start a learning process based on the robot's level. 
+    Users can upgrade their robots' level by paying tokens and waiting for a period of time. 
+    The contract rewards users with tokens for participating in the learning process.
+    */
 
 contract Learning is Ownable, IERC721Receiver, Pausable
 {
@@ -86,42 +24,59 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     IRobot public Robot;          // NFT learn
     IERC20 public TokenReward;     // Reward
 
+    // stores the LearnData of each user.
     mapping(address => LearnData) public DataUserLearn;
+
+    // stores the RobotData of each user.
     mapping(address => RobotData) public RobotJoinGameOfUser;
+
+    //stores the block number of the pending level upgrade for each robot NFT.
     mapping(uint256 => uint256) public PendingBlockUpgradeLevelRobotNFT;
 
     // config
     
+    //number of blocks a user has to wait before they can remove their NFT from the game.
     uint256 public DelayBlockRobotNFTOutGame;
 
+    //stores the price to upgrade each level of robot NFT.
     mapping(uint256 => uint256) public PriceUpgradeLevelRobotNFT; 
-    mapping(uint256 => uint256) public BlockUpgradeLevelRobotNFT; 
-    uint256 public MaxLevelOfRobotNFTInGame;
-    uint256 public DelayBlockLearnNextTime;
-    uint256 public TotalBlockLearnEachTime;
 
+    // stores the number of blocks needed to upgrade each level of robot NFT.
+    mapping(uint256 => uint256) public BlockUpgradeLevelRobotNFT; 
+
+    //stores the reward for each block of learning based on the robot NFT level.
     mapping(uint256 => uint256) public RewardPerBlockOfLevel;
 
+    // the maximum level of robot NFT that can join the game.
+    uint256 public MaxLevelOfRobotNFTInGame;
+
+    //the number of blocks a user has to wait before they can start learning again.
+    uint256 public DelayBlockLearnNextTime;
+
+    //the total number of blocks a user needs to learn to earn rewards.
+    uint256 public TotalBlockLearnEachTime;
+
+    // Event action
     event OnJoinGame(address user, uint256 tokenId);
     event OnOutGame(address user, uint256 tokenId);
-    event OnUpgrateLevelRobot(address user, uint256 tokenId, uint256 level);
-    event OnConfirmUpgrateLevelRobot(address user, uint256 tokenId, uint256 level);
+    event OnUpgradeLevelRobot(address user, uint256 tokenId, uint256 level);
+    event OnConfirmUpgradeLevelRobot(address user, uint256 tokenId, uint256 level);
     event OnStartLearn(address user, uint256 tokenId, uint256 level, uint256 startBlockLearn, uint256 pendingBlockLearn);
     event OnStopLearn(address user, uint256 tokenId, uint256 level, uint256 totalBlockLearnEachTime, uint256 stopBlockLearn);
     event OnBonusReward(address user, uint256 AmountTokenReward);
 
     struct LearnData
     {
-        bool Learning;
-        uint256 StartBlockLearn;
-        uint256 StopBlockLearn;
-        uint256 PendingBlockLearn;
+        bool Learning; //a boolean that indicates whether the user is currently in a learning session             
+        uint256 StartBlockLearn; //the block at which the user started the current learning session
+        uint256 StopBlockLearn; //the block at which the user stopped the current learning session
+        uint256 PendingBlockLearn; //the number of blocks remaining until the current learning session is complete
     }
 
     struct RobotData
     {
-        uint256 BlockJoin;
-        uint256 TokenId;
+        uint256 BlockJoin; // the block at which the NFT robot was added to the game
+        uint256 TokenId; // the ID of the NFT robot
     }
 
     constructor(
@@ -161,12 +116,12 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     }
 
     // owner acction
-    function SetPauseSystem() public onlyOwner 
+    function PauseSystem() public onlyOwner 
     {
         _pause();
     }
 
-    function SetEnableSystem() public onlyOwner
+    function UnpauseSystem() public onlyOwner
     {
         _unpause();
     }
@@ -204,13 +159,11 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         BlockUpgradeLevelRobotNFT[level] = quantityBlock;
     }
 
+    //user action
+    
     /**
-    This function allows a user to join the game by transferring their NFT robot to the game contract. 
-    The function takes as input a tokenId, which identifies the NFT robot to be transferred. 
-    The function checks that the NFT robot is owned by the user and removes it from the user's collection. 
-    It then stores information about the user's participation in the game, 
-    including the block number at which the user joined and the tokenId of the robot. 
-    Finally, the function emits an event to notify that the user has joined the game.    
+    allows the user to join the game by transferring their robot NFT to the game contract, 
+    and records the robot's data including the block number at which it joined 
      */
     function LetRobotNFTJoinTheGame(uint256 tokenId) public whenNotPaused
     {
@@ -228,13 +181,11 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     }
 
     /**
-    This function allows a user to leave the game by transferring their NFT robot back to their collection. 
-    The function checks that the user has joined the game and removes information about 
-    the user's participation in the game. If the user was learning, it stops the learning process. 
-    Finally, the function removes the robot from the game contract and emits an event to notify that 
-    the user has left the game.
-     */
-
+    allows a user to remove their robot NFT from the game. 
+    If the user's robot is currently in the process of learning, 
+    the function stops the learning process. 
+    The function returns an error if the robot could not be removed from the game.
+    */
     function LetRobotNFTOutOfTheGame() public 
     {
         address user = msg.sender;
@@ -250,66 +201,58 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     }
 
     /**
-    This function allows a user to upgrade the level of their NFT robot by paying a certain amount of tokens. 
-    The function checks that the user has joined the game and that the level of the robot
-    is lower than the maximum allowed level. It also checks that the user has enough tokens to pay for the upgrade. 
-    If all checks pass, the function transfers the tokens from the user to the game contract and
-    sets a pending block number for the upgrade. Finally, the function emits an event to notify 
-    that the user has initiated an upgrade.
+    allows users to upgrade the level of their robot NFT if they have enough balance. 
+    It checks if the robot NFT is valid and the user has enough balance to pay the price of upgrading the level.
      */
     function UpgradeLevelRobot() public whenNotPaused
     {
         address user = msg.sender;
         RobotData memory robotData = RobotJoinGameOfUser[user];
         uint256 tokenId = robotData.TokenId;
-        require(tokenId != 0, "Error UpgrateLevelRobot: Invalid tokenId");
+        require(tokenId != 0, "Error UpgradeLevelRobot: Invalid tokenId");
 
         uint256 level = Robot.Level(tokenId);
-        require(level < MaxLevelOfRobotNFTInGame, "Error UpgrateLevelRobot: Invalid level");
-        require(TokenReward.balanceOf(user) >= PriceUpgradeLevelRobotNFT[level.add(1)], "Error UpgrateLevelRobot: Invalid balance");
+        require(level < MaxLevelOfRobotNFTInGame, "Error UpgradeLevelRobot: Invalid level");
+        require(TokenReward.balanceOf(user) >= PriceUpgradeLevelRobotNFT[level.add(1)], "Error UpgradeLevelRobot: Invalid balance");
         
         TokenReward.transferFrom(user, address(this), PriceUpgradeLevelRobotNFT[level.add(1)]);
 
         PendingBlockUpgradeLevelRobotNFT[tokenId] = block.number.add(BlockUpgradeLevelRobotNFT[level.add(1)]);
 
-        emit OnUpgrateLevelRobot(user, tokenId, level);
+        emit OnUpgradeLevelRobot(user, tokenId, level);
     }
 
     /**
-    This function confirms the upgrade of a user's NFT robot. 
-    The function checks that the upgrade has been initiated and that the pending block number 
-    for the upgrade has passed. It then upgrades the level of the robot and removes the pending block number. 
-    Finally, the function emits an event to notify that the upgrade has been confirmed. 
+    confirms that the user's robot is ready to upgrade to the next level, 
+    updates the 'PendingBlockUpgradeLevelRobotNFT' to 0,
+    and upgrades the level of the robot.
     */
-    function ConfirmUpgrateLevelRobot() public whenNotPaused
+    function ConfirmUpgradeLevelRobot() public whenNotPaused
     {
         address user = msg.sender;
         RobotData memory robotData = RobotJoinGameOfUser[user];
         uint256 tokenId = robotData.TokenId;
-        require(PendingBlockUpgradeLevelRobotNFT[tokenId] > 0, "Error ConfirmUpgrateLevelRobot: Validate");
-        require(block.number >= PendingBlockUpgradeLevelRobotNFT[tokenId], "Error ConfirmUpgrateLevelRobot: Time out");
+        require(PendingBlockUpgradeLevelRobotNFT[tokenId] > 0, "Error ConfirmUpgradeLevelRobot: Validate");
+        require(block.number >= PendingBlockUpgradeLevelRobotNFT[tokenId], "Error ConfirmUpgradeLevelRobot: Time out");
         PendingBlockUpgradeLevelRobotNFT[tokenId] = 0;
         Robot.UpgradeLevel(tokenId);
 
-        emit OnConfirmUpgrateLevelRobot(user, tokenId, Robot.Level(tokenId));
+        emit OnConfirmUpgradeLevelRobot(user, tokenId, Robot.Level(tokenId));
     }
 
     /**
-    This function allows a user to start the learning process for their NFT robot.
-    The function checks that the user has joined the game and that the robot is not currently learning.
-    It then sets the start block number for the learning process and sets the learning flag to true. 
-    Finally, the function emits an event to notify that the learning process has started. 
+    allows the user who called the function to start their robot's learning process 
     */
     function ForRobotNFTToLearn() public whenNotPaused 
     {
         address user = msg.sender;
         RobotData memory robotData = RobotJoinGameOfUser[user];
         uint256 tokenId = robotData.TokenId;
-        require(tokenId != 0, "Error StartLearn: Invalid tokenId");
+        require(tokenId != 0, "Error StartLearning: Invalid tokenId");
 
         LearnData storage data = DataUserLearn[user]; 
-        require(data.StartBlockLearn < block.number, "Error StartLearn: Time out");
-        require(data.Learning == false, "Error StartLearn: Learning");
+        require(data.StartBlockLearn < block.number, "Error StartLearning: Time out");
+        require(data.Learning == false, "Error StartLearning: Learning");
 
         if(data.PendingBlockLearn == 0)
         {
@@ -322,40 +265,33 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         emit OnStartLearn(user, tokenId, Robot.Level(tokenId), data.StartBlockLearn, data.PendingBlockLearn);
     }
 
-
     /*
-    This function allows a user to stop the learning process for their NFT robot. 
-    The function checks that the robot is currently learning and calculates the number of blocks
-    that have passed since the start of the learning process. 
-    If the required number of blocks has been reached, 
-    it sets the start block number for the next learning process and sets the pending block number to 0. 
-    Otherwise, it updates the pending block number. 
-    Finally, the function calculates the bonus tokens that the user will receive and emits an event to notify 
-    that the learning process has stopped.
+    allows the user who called the function to stop their robot's learning process and
+    receive bonus tokens based on the number of blocks learned
      */
     function ForRobotNFTStopLearn() public whenNotPaused
     {
         address user = msg.sender;
 
         LearnData storage data = DataUserLearn[user]; 
-        require(data.Learning == true, "Error StopLearn: Not learning");
+        require(data.Learning == true, "Error StopLearning: Not learning");
 
-        uint256 totalBlockLearnEachTimeedOfUser = block.number.sub(data.StartBlockLearn);
-        if(totalBlockLearnEachTimeedOfUser >= data.PendingBlockLearn)
+        uint256 totalBlockLearnedOfUser = block.number.sub(data.StartBlockLearn);
+        if(totalBlockLearnedOfUser >= data.PendingBlockLearn)
         {
-            totalBlockLearnEachTimeedOfUser = data.PendingBlockLearn;
+            totalBlockLearnedOfUser = data.PendingBlockLearn;
 
             data.StartBlockLearn = block.number.add(DelayBlockLearnNextTime);
             data.PendingBlockLearn = 0;
         }
         else
         {
-            data.PendingBlockLearn = data.PendingBlockLearn.sub(totalBlockLearnEachTimeedOfUser);
+            data.PendingBlockLearn = data.PendingBlockLearn.sub(totalBlockLearnedOfUser);
         }
         data.Learning = false;
         data.StopBlockLearn = block.number;
 
-        DoBonusToken(user, totalBlockLearnEachTimeedOfUser);
+        DoBonusToken(user, totalBlockLearnedOfUser);
     }
 
     function GetData(address user) public view returns(
@@ -385,15 +321,15 @@ contract Learning is Ownable, IERC721Receiver, Pausable
 
         if(pendingBlockLearn != 0) 
         {
-            uint256 totalBlockLearnEachTimeed = TotalBlockLearnEachTime.sub(pendingBlockLearn);
+            uint256 totalBlockLearned = TotalBlockLearnEachTime.sub(pendingBlockLearn);
             uint256 totalBlockLearnEachTimeing = blockNumber.sub(startBlockLearn);
 
             rewardPerDay = (startBlockLearn < stopBlockLearn) ?
-                totalBlockLearnEachTimeed.mul(RewardPerBlockOfLevel[levelRobotJoinGameOfUser]) :
-                    ((totalBlockLearnEachTimeed.add(totalBlockLearnEachTimeing))
+                totalBlockLearned.mul(RewardPerBlockOfLevel[levelRobotJoinGameOfUser]) :
+                    ((totalBlockLearned.add(totalBlockLearnEachTimeing))
                         .mul(RewardPerBlockOfLevel[levelRobotJoinGameOfUser]) <
                         TotalBlockLearnEachTime.mul(RewardPerBlockOfLevel[levelRobotJoinGameOfUser])) ? 
-                            (totalBlockLearnEachTimeed.add(totalBlockLearnEachTimeing))
+                            (totalBlockLearned.add(totalBlockLearnEachTimeing))
                             .mul(RewardPerBlockOfLevel[levelRobotJoinGameOfUser]) :
                                 TotalBlockLearnEachTime.mul(RewardPerBlockOfLevel[levelRobotJoinGameOfUser]);
         }
@@ -434,24 +370,20 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     }
 
     /**
-    This function calculates the bonus token reward for the user based on the number of blocks learned 
-    by the user and transfers it to the user's address. 
-    The bonus token reward is calculated based on the level of the user's robot and the reward per block for that level. 
-    If the contract balance of TokenReward is less than the bonus token reward, 
-    then it transfers the entire balance to the user. After transferring the bonus tokens, 
-    it emits an event OnBonusReward with the user's address and the bonus token reward as parameters.
+    rewards a specified 'user' with bonus tokens based on the level of their robot and
+    a specified 'totalBlockLearned' value. 
      */
-    function DoBonusToken(address user, uint256 totalBlockLearnEachTimeed) private 
+    function DoBonusToken(address user, uint256 totalBlockLearned) private 
     {
         RobotData memory robotData = RobotJoinGameOfUser[user];
         uint256 tokenId = robotData.TokenId;
         uint256 level = Robot.Level(tokenId);
         uint256 rewardPerBlock = RewardPerBlockOfLevel[level];
-        if(TokenReward.balanceOf(address(this)) >= totalBlockLearnEachTimeed.mul(rewardPerBlock))
+        if(TokenReward.balanceOf(address(this)) >= totalBlockLearned.mul(rewardPerBlock))
         {
-            TokenReward.transfer(user, totalBlockLearnEachTimeed.mul(rewardPerBlock));
+            TokenReward.transfer(user, totalBlockLearned.mul(rewardPerBlock));
 
-            emit OnBonusReward(user, totalBlockLearnEachTimeed.mul(rewardPerBlock));
+            emit OnBonusReward(user, totalBlockLearned.mul(rewardPerBlock));
         }
         else
         {
@@ -462,12 +394,8 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     }  
 
     /** 
-    This function removes the robot associated with the user and transfers it to the user's address. 
-    The robot can be removed only if the time since the robot was joined in the game is greater 
-    than DelayBlockRobotNFTOutGame. If the robot is successfully removed, 
-    it sets the token ID of the robot to 0 and emits an event OnOutGame 
-    with the sender's address and the token ID as parameters. 
-    The function returns true if the robot is successfully removed, else it returns false.
+   removes the NFT robot of a specified 'user' from the game contract 
+   if the robot has been in the game for a specified amount of time.
     */
     function removeRobot(address user) private returns(bool)
     {
