@@ -4,15 +4,15 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 // NFT
-contract Robot is ERC721Enumerable, Ownable
+contract Robot is ERC721Enumerable, Ownable, Pausable
 {
     using Counters for Counters.Counter;
     Counters.Counter private TokenId;
 
-    bool public EnableSystem;
     mapping(address => bool) public Miner;
 
     string public BaseURI;
@@ -21,36 +21,27 @@ contract Robot is ERC721Enumerable, Ownable
 
     mapping(uint256 => uint256) public Level;
 
-    modifier IsEnableSystem()
-    {
-        require(EnableSystem == true, "System paused");
-        _;
-    }
-
     constructor(
-        string memory tokenName, string memory tokenSysbol
-        ) ERC721 (tokenName, tokenSysbol)
-    {
-        EnableSystem = true;
-    }
+        string memory tokenName, string memory tokenSymbol
+        ) ERC721 (tokenName, tokenSymbol) {}
 
     function SetPauseSystem() public onlyOwner 
     {
-        EnableSystem = false;
+        _pause();
     }
 
     function SetEnableSystem() public onlyOwner
     {
-        EnableSystem = true;
+        _unpause();
     }
 
-    function SetEnableMiner(address miner) public onlyOwner IsEnableSystem 
+    function SetEnableMiner(address miner) public onlyOwner 
     {
         require(Miner[miner] == false, "Error SetEnableMiner: Invalid miner");
         Miner[miner] = true;
     }
 
-    function SetDisableMiner(address miner) public onlyOwner IsEnableSystem
+    function SetDisableMiner(address miner) public onlyOwner
     {
         require(Miner[miner] == true, "Error SetDisableMiner: Invalid miner");
         Miner[miner] = false;
@@ -62,7 +53,7 @@ contract Robot is ERC721Enumerable, Ownable
         BaseURI = baseURI;
     }
 
-    function Mint(address to) public IsEnableSystem returns(uint256)
+    function Mint(address to) public whenNotPaused returns(uint256)
     {
         require(Miner[msg.sender] == true, "Error Mint: Invalid miner");
         TokenId.increment();
@@ -75,15 +66,16 @@ contract Robot is ERC721Enumerable, Ownable
         return newTokenId;
     }
 
-    function Burn(uint256 tokenId) public IsEnableSystem virtual
+    function Burn(uint256 tokenId) public whenNotPaused virtual
     {
         require(_isApprovedOrOwner(msg.sender, tokenId), "Burn caller is not owner nor approved");
         _burn(tokenId);
     }
 
-    function UpgrateLevel(uint256 tokenId) public IsEnableSystem
+    function UpgradeLevel(uint256 tokenId) public whenNotPaused
     {
-        require(Miner[msg.sender] == true, "Error UpgrateLevel");
+        require(Miner[msg.sender] == true, "Error UpgradeLevel");
+        require(_exists(tokenId), "Error UpgradeLevel: Token does not exist");
         Level[tokenId] += 1;
     }
 
@@ -91,5 +83,5 @@ contract Robot is ERC721Enumerable, Ownable
     {
         return BaseURI;
     }
-    
+
 }
