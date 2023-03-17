@@ -242,7 +242,7 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         require(robotData.TokenId != 0, "Error OutGame: Haven't joined the game");
 
         LearnData memory data = DataUserLearn[user]; 
-        if (data.StartBlockLearn > data.StopBlockLearn) 
+        if (data.Learning == true) 
         {
             ForRobotNFTStopLearn();
         }
