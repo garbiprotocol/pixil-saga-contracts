@@ -1,8 +1,8 @@
 // const QuestionData = artifacts.require("QuestionData");
 // const Question = artifacts.require("Question");
 // const CyberCredit = artifacts.require("CyberCredit");
-const Robot = artifacts.require("Robot");
-// const Learning = artifacts.require("Learning");
+// const Robot = artifacts.require("Robot");
+const Learning = artifacts.require("Learning");
 
 // const Test = artifacts.require("Test");
 
@@ -12,8 +12,8 @@ const Robot = artifacts.require("Robot");
 
 
 // test BSC
-// const Robot = "0xFdd66dea9B8ff0eFB73e86C79A233c951854f245";
-// const CyberCredit = "0xe51819D032f9E969Fec26c8DA77ac4d12a956EfC";
+const Robot = "0xa5C447aaff3a4239e87D1A760Aba0f25511a5106";
+const CyberCredit = "0xe51819D032f9E969Fec26c8DA77ac4d12a956EfC";
 // Learning = 0x1DF916C2a9f6ae4A7009c2da316bF8e57a0634b2
 
 module.exports = function(deployer) {
@@ -21,6 +21,6 @@ module.exports = function(deployer) {
     // deployer.deploy(Test, "0x0000000000000000000000000000000000000064");
     // deployer.deploy(QuestionData);
     // deployer.deploy(CyberCredit);
-    deployer.deploy(Robot, "Robot", "rNFT")
-        // deployer.deploy(Learning, Robot, CyberCredit);
+    // deployer.deploy(Robot, "Robot", "rNFT")
+    deployer.deploy(Learning, Robot, CyberCredit);
 }

@@ -244,7 +244,7 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         LearnData memory data = DataUserLearn[user]; 
         if (data.StartBlockLearn > data.StopBlockLearn) 
         {
-            LetRobotNFTStopLearn();
+            ForRobotNFTStopLearn();
         }
         require(removeRobot(msg.sender) == true, "Error OutGame: removeRobot");
     }
@@ -333,7 +333,7 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     Finally, the function calculates the bonus tokens that the user will receive and emits an event to notify 
     that the learning process has stopped.
      */
-    function LetRobotNFTStopLearn() public whenNotPaused
+    function ForRobotNFTStopLearn() public whenNotPaused
     {
         address user = msg.sender;
 
