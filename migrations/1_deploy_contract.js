@@ -2,6 +2,7 @@
 // const Question = artifacts.require("Question");
 // const CyberCredit = artifacts.require("CyberCredit");
 // const Robot = artifacts.require("Robot");
+const HeroNFT = artifacts.require("HeroNFT");
 const Learning = artifacts.require("Learning");
 
 // const Test = artifacts.require("Test");
@@ -22,5 +23,6 @@ module.exports = function(deployer) {
     // deployer.deploy(QuestionData);
     // deployer.deploy(CyberCredit);
     // deployer.deploy(Robot, "Robot", "rNFT");
-    deployer.deploy(Learning, Robot, CyberCredit);
+    deployer.deploy(HeroNFT, "Hero Pixi Saga", "HPG", CyberCredit);
+    // deployer.deploy(Learning, Robot, CyberCredit);
 }
