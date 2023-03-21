@@ -191,7 +191,6 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     function UpgradeLevelRobot() public whenNotPaused isHeroNFTJoinGame
     {
         address user = msg.sender;
-        // RobotData memory robotData = RobotJoinGameOfUser[user];
         (,uint256 tokenId) = GameCotrollerContract.RobotNFTJoinGameOfUser(user);
         require(tokenId != 0, "Error UpgradeLevelRobot: Invalid tokenId");
 
@@ -214,8 +213,6 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     function ConfirmUpgradeLevelRobot() public whenNotPaused isHeroNFTJoinGame
     {
         address user = msg.sender;
-        // RobotData memory robotData = RobotJoinGameOfUser[user];
-        // uint256 tokenId = robotData.TokenId;
         (,uint256 tokenId) = GameCotrollerContract.RobotNFTJoinGameOfUser(user);
         require(PendingBlockUpgradeLevelRobotNFT[tokenId] > 0, "Error ConfirmUpgradeLevelRobot: Validate");
         require(block.number >= PendingBlockUpgradeLevelRobotNFT[tokenId], "Error ConfirmUpgradeLevelRobot: Time out");
@@ -231,8 +228,6 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     function ForRobotNFTToLearn() public whenNotPaused isHeroNFTJoinGame
     {
         address user = msg.sender;
-        // RobotData memory robotData = RobotJoinGameOfUser[user];
-        // uint256 tokenId = robotData.TokenId;
         (,uint256 tokenId) = GameCotrollerContract.RobotNFTJoinGameOfUser(user);
         require(tokenId != 0, "Error StartLearning: Invalid tokenId");
 
@@ -294,8 +289,6 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     )
     {
         cyberCreditBalance = TokenReward.balanceOf(user);
-        // RobotData memory robotData = RobotJoinGameOfUser[user];
-        // tokenId = robotData.TokenId;
         (,tokenId) = GameCotrollerContract.RobotNFTJoinGameOfUser(user);
         
         levelRobotJoinGameOfUser = Robot.Level(tokenId);
@@ -363,8 +356,6 @@ contract Learning is Ownable, IERC721Receiver, Pausable
      */
     function DoBonusToken(address user, uint256 totalBlockLearned) private
     {
-        // RobotData memory robotData = RobotJoinGameOfUser[user];
-        // uint256 tokenId = robotData.TokenId;
         (,uint256 tokenId) = GameCotrollerContract.RobotNFTJoinGameOfUser(user);
         uint256 level = Robot.Level(tokenId);
         uint256 rewardPerBlock = RewardPerBlockOfLevel[level];

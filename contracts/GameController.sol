@@ -20,6 +20,8 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     mapping(address => uint256) public HeroNFTJoinGameOfUser;
     mapping(address => RobotData) public RobotNFTJoinGameOfUser;
 
+    mapping(address => bool) public UserClaimedRobotNFT;
+
     uint256 public DelayBlockRobotNFTOutGame;
 
     event OnHeroNFTJoinedGame(address indexed user, uint256 indexed heroId);
@@ -63,6 +65,14 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     function SetDelayBlockRobotNFTOutGame(uint256 value) public onlyOwner
     {
         DelayBlockRobotNFTOutGame = value;
+    }
+
+    function ClaimRobotNFT() public whenNotPaused 
+    {
+        address to = _msgSender();
+        require(UserClaimedRobotNFT[to] == false, "Error ClaimRobotNFT: Claimed");
+        RobotNFT.Mint(to);
+        UserClaimedRobotNFT[to] = true;
     }
 
     /*
