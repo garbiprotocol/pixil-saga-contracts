@@ -1,0 +1,328 @@
+{
+  "contractName": "ILearning",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "ForRobotNFTStopLearn",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "DataUserLearn",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "Learning",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "StartBlockLearn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "StopBlockLearn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "PendingBlockLearn",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"DataUserLearn\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"Learning\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"StartBlockLearn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"StopBlockLearn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"PendingBlockLearn\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ForRobotNFTStopLearn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/ILearning.sol\":\"ILearning\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/token/ERC721/IERC721.sol\":{\"keccak256\":\"0xab28a56179c1db258c9bf5235b382698cb650debecb51b23d12be9e241374b68\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://daae589a9d6fa7e55f99f86c0a16796ca490f243fb3693632c3711c0646c1d56\",\"dweb:/ipfs/QmR3zpd7wNw3rcUdekwiv6FYHJqksuTCXLVioTxu6Fbxk3\"]},\"@openzeppelin/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"project:/contracts/interfaces/ILearning.sol\":{\"keccak256\":\"0x1189ba042dfa989a20b4eebba9e94e5eaeadda821293909430477d1a66e2a3db\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://982780b99efc0a4db60ec54ec929b3cc4edd6edda978e9aee2ffcb56a87344db\",\"dweb:/ipfs/QmQrVa5d2ZQt1pS9qM3vJCaMyCBwj9jUeTkuqiJBvAvgim\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\nimport \"@openzeppelin/contracts/token/ERC721/IERC721.sol\";\ninterface ILearning\n{\n    function ForRobotNFTStopLearn() external;\n\n    function DataUserLearn(address user) external pure returns (\n        bool Learning, //a boolean that indicates whether the user is currently in a learning session             \n        uint256 StartBlockLearn, //the block at which the user started the current learning session\n        uint256 StopBlockLearn, //the block at which the user stopped the current learning session\n        uint256 PendingBlockLearn //the number of blocks remaining until the current learning session is complete\n    );\n}",
+  "sourcePath": "/Applications/projects/garbi-contracts/contracts/interfaces/ILearning.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/ILearning.sol",
+    "exportedSymbols": {
+      "IERC165": [
+        2426
+      ],
+      "IERC721": [
+        1359
+      ],
+      "ILearning": [
+        5563
+      ]
+    },
+    "id": 5564,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5545,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:24"
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+        "file": "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+        "id": 5546,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5564,
+        "sourceUnit": 1360,
+        "src": "57:58:24",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "ILearning",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 5563,
+        "linearizedBaseContracts": [
+          5563
+        ],
+        "name": "ILearning",
+        "nameLocation": "126:9:24",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "functionSelector": "34e951e5",
+            "id": 5549,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "ForRobotNFTStopLearn",
+            "nameLocation": "151:20:24",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5547,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "171:2:24"
+            },
+            "returnParameters": {
+              "id": 5548,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "182:0:24"
+            },
+            "scope": 5563,
+            "src": "142:41:24",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "76a4cdd9",
+            "id": 5562,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "DataUserLearn",
+            "nameLocation": "198:13:24",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 5552,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5551,
+                  "mutability": "mutable",
+                  "name": "user",
+                  "nameLocation": "220:4:24",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5562,
+                  "src": "212:12:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5550,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "212:7:24",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "211:14:24"
+            },
+            "returnParameters": {
+              "id": 5561,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5554,
+                  "mutability": "mutable",
+                  "name": "Learning",
+                  "nameLocation": "263:8:24",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5562,
+                  "src": "258:13:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 5553,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "258:4:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5556,
+                  "mutability": "mutable",
+                  "name": "StartBlockLearn",
+                  "nameLocation": "381:15:24",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5562,
+                  "src": "373:23:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5555,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "373:7:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5558,
+                  "mutability": "mutable",
+                  "name": "StopBlockLearn",
+                  "nameLocation": "481:14:24",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5562,
+                  "src": "473:22:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5557,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "473:7:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 5560,
+                  "mutability": "mutable",
+                  "name": "PendingBlockLearn",
+                  "nameLocation": "580:17:24",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 5562,
+                  "src": "572:25:24",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5559,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "572:7:24",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "248:435:24"
+            },
+            "scope": 5563,
+            "src": "189:495:24",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 5564,
+        "src": "116:570:24",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:654:24"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.17+commit.8df45f5f.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.11",
+  "updatedAt": "2023-03-21T02:14:08.714Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

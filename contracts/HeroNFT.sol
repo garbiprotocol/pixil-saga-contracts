@@ -20,6 +20,8 @@ contract HeroNFT is ERC721Enumerable, Ownable, Pausable
 
     uint256 public PriceCreditMint;
 
+    uint256 public MaxTeamId;
+
     mapping(uint256 => uint256) public TeamId;
 
     event OnMintNFT(address from, address to, uint256 HeroId);
@@ -31,6 +33,7 @@ contract HeroNFT is ERC721Enumerable, Ownable, Pausable
     {
         ERC20CreditToken = erc20CreditToken;
         PriceCreditMint = 1e18;
+        MaxTeamId = 4;
     }
 
     function SetPauseSystem() public onlyOwner 
@@ -48,6 +51,12 @@ contract HeroNFT is ERC721Enumerable, Ownable, Pausable
         PriceCreditMint = value;
     }
 
+    function SetMaxTeamId(uint256 value) public onlyOwner 
+    {
+        require(value >= 1, "Error SetMaxTeamId: invalid value");
+        MaxTeamId = value;
+    }
+
     function SetBaseURI(string memory baseURI) public onlyOwner 
     {
         require(bytes(baseURI).length > 0, "Error SetBaseURI: Invalid baseURI");
@@ -56,6 +65,7 @@ contract HeroNFT is ERC721Enumerable, Ownable, Pausable
 
     function Mint(uint256 teamId) public whenNotPaused returns(uint256)
     {
+        require(teamId >= 1 && teamId <= MaxTeamId, "Error Mint: Invalid teamId");
         address to = _msgSender();
         require(ERC20CreditToken.balanceOf(to) >= PriceCreditMint, "Error Mint: Invalid balance");
         ERC20CreditToken.transferFrom(to, address(this), PriceCreditMint);

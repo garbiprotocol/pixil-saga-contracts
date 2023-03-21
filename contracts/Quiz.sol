@@ -2,15 +2,16 @@
 pragma solidity ^0.8.0;
 
 import "./interfaces/IQuestionData.sol";
-
+import "./interfaces/IGameController.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract Question is Ownable
+contract Quiz is Ownable
 {
     using SafeMath for uint256;
 
+    IGameController GameCotrollerContract;
     IQuestionData public QuestionDataContract;
     IERC20 public TokenReward;  // CyberCredit
 
@@ -42,6 +43,18 @@ contract Question is Ownable
         TokenReward = tokenReward;
     }
 
+    modifier isHeroNFTJoinGame()
+    {
+        address user = _msgSender();
+        require(GameCotrollerContract.HeroNFTJoinGameOfUser(user) != 0, "Error: Invaid HeroNFT join game");
+        _;
+    }
+
+    function SetGameCotrollerContract(IGameController gameCotrollerContract) public onlyOwner 
+    {
+        GameCotrollerContract = gameCotrollerContract;
+    }
+
     function SetQuestionDataContract(IQuestionData newQuestionDataContract) public onlyOwner
     {
         QuestionDataContract = newQuestionDataContract;
@@ -71,7 +84,7 @@ contract Question is Ownable
     {
         BonusAnswerCorrect = newBonusAnswerCorrect;
     }
-    function DoQuestOnDay() public
+    function DoQuestOnDay() public isHeroNFTJoinGame
     {
         address user = msg.sender;
         require(block.number > TimeTheNextToDoQuest[user], "Error To Do Quest: It's not time to ask quest");
@@ -137,7 +150,7 @@ contract Question is Ownable
         // blockReturnDoQuestion = BlockReturnDoQuestion[user];
     }
 
-    function SubmitQuestions(uint256[] calldata results) public
+    function SubmitQuestions(uint256[] calldata results) public isHeroNFTJoinGame
     {
         address user = msg.sender;
         require(block.number > TimeTheNextSubmit[user], "Error Submit Question: It's not time to submit yet");
