@@ -127,14 +127,12 @@ interface IHero is IERC721
 
     function TeamId(uint256 tokenId) external view returns (uint256);
 
-    function Mint(address to) external returns (uint256);
+    function Mint(address to, uint256 teamId) external returns (uint256);
 
     function Burn(uint256 tokenId) external;
 
     function tokenURI(uint256 tokenId) external view returns(string memory);
 
     function tokenOfOwnerByIndex(address owner, uint256 index) external view returns(uint256);
-
-    function UpgradeLevel(uint256 tokenId) external;
 
 } 

@@ -10,14 +10,6 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 import "./interfaces/IRobot.sol";
 
-    /**
-    This contract allows users to learn by using their NFT robots. 
-    Users can join the game by transferring their robots to the contract, 
-    and the contract will start a learning process based on the robot's level. 
-    Users can upgrade their robots' level by paying tokens and waiting for a period of time. 
-    The contract rewards users with tokens for participating in the learning process.
-    */
-
 contract Learning is Ownable, IERC721Receiver, Pausable
 {
     using SafeMath for uint256;
@@ -27,9 +19,6 @@ contract Learning is Ownable, IERC721Receiver, Pausable
 
     // stores the LearnData of each user.
     mapping(address => LearnData) public DataUserLearn;
-
-    // stores the RobotData of each user.
-    // mapping(address => RobotData) public RobotJoinGameOfUser;
 
     //stores the block number of the pending level upgrade for each robot NFT.
     mapping(uint256 => uint256) public PendingBlockUpgradeLevelRobotNFT;
@@ -58,10 +47,7 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     uint256 public TotalBlockLearnEachTime;
 
     // Event action
-    event OnJoinGame(address user, uint256 tokenId);
-    event OnOutGame(address user, uint256 tokenId);
     event OnUpgradeLevelRobot(address user, uint256 tokenId, uint256 level);
-    event OnConfirmUpgradeLevelRobot(address user, uint256 tokenId, uint256 level);
     event OnStartLearn(address user, uint256 tokenId, uint256 level, uint256 startBlockLearn, uint256 pendingBlockLearn);
     event OnStopLearn(address user, uint256 tokenId, uint256 level, uint256 totalBlockLearnEachTime, uint256 stopBlockLearn);
     event OnBonusReward(address user, uint256 AmountTokenReward);
@@ -72,12 +58,6 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         uint256 StartBlockLearn; //the block at which the user started the current learning session
         uint256 StopBlockLearn; //the block at which the user stopped the current learning session
         uint256 PendingBlockLearn; //the number of blocks remaining until the current learning session is complete
-    }
-
-    struct RobotData
-    {
-        uint256 BlockJoin; // the block at which the NFT robot was added to the game
-        uint256 TokenId; // the ID of the NFT robot
     }
 
     constructor(
@@ -113,10 +93,17 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     modifier isHeroNFTJoinGame()
     {
         address user = _msgSender();
-        require(GameCotrollerContract.HeroNFTJoinGameOfUser(user) != 0, "Error: Invaid HeroNFT join game");
+        require(GameCotrollerContract.HeroNFTJoinGameOfUser(user) != 0, "Error: Invaid HeroNFT join game.");
         _;
     }
 
+    modifier isNotUpgradeRobot()
+    {
+        address user = _msgSender();
+        (,uint256 robotId) = GameCotrollerContract.RobotNFTJoinGameOfUser(user);
+        require(block.number > PendingBlockUpgradeLevelRobotNFT[robotId], "Error: Robot upgraded.");
+        _;
+    }
 
     function onERC721Received(address, address, uint256, bytes memory) public virtual override returns (bytes4) 
     {
@@ -183,12 +170,7 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     }
 
     //user action
-
-    /**
-    allows users to upgrade the level of their robot NFT if they have enough balance. 
-    It checks if the robot NFT is valid and the user has enough balance to pay the price of upgrading the level.
-     */
-    function UpgradeLevelRobot() public whenNotPaused isHeroNFTJoinGame
+    function UpgradeLevelRobot() public whenNotPaused isHeroNFTJoinGame isNotUpgradeRobot
     {
         address user = msg.sender;
         (,uint256 tokenId) = GameCotrollerContract.RobotNFTJoinGameOfUser(user);
@@ -201,35 +183,16 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         TokenReward.transferFrom(user, address(this), PriceUpgradeLevelRobotNFT[level.add(1)]);
 
         PendingBlockUpgradeLevelRobotNFT[tokenId] = block.number.add(BlockUpgradeLevelRobotNFT[level.add(1)]);
-
+        Robot.UpgradeLevel(tokenId);
         emit OnUpgradeLevelRobot(user, tokenId, level);
     }
 
-    /**
-    confirms that the user's robot is ready to upgrade to the next level, 
-    updates the 'PendingBlockUpgradeLevelRobotNFT' to 0,
-    and upgrades the level of the robot.
-    */
-    function ConfirmUpgradeLevelRobot() public whenNotPaused isHeroNFTJoinGame
-    {
-        address user = msg.sender;
-        (,uint256 tokenId) = GameCotrollerContract.RobotNFTJoinGameOfUser(user);
-        require(PendingBlockUpgradeLevelRobotNFT[tokenId] > 0, "Error ConfirmUpgradeLevelRobot: Validate");
-        require(block.number >= PendingBlockUpgradeLevelRobotNFT[tokenId], "Error ConfirmUpgradeLevelRobot: Time out");
-        PendingBlockUpgradeLevelRobotNFT[tokenId] = 0;
-        Robot.UpgradeLevel(tokenId);
-
-        emit OnConfirmUpgradeLevelRobot(user, tokenId, Robot.Level(tokenId));
-    }
-
-    /**
-    allows the user who called the function to start their robot's learning process 
-    */
-    function ForRobotNFTToLearn() public whenNotPaused isHeroNFTJoinGame
+    function ForRobotNFTToLearn() public whenNotPaused isHeroNFTJoinGame isNotUpgradeRobot
     {
         address user = msg.sender;
         (,uint256 tokenId) = GameCotrollerContract.RobotNFTJoinGameOfUser(user);
         require(tokenId != 0, "Error StartLearning: Invalid tokenId");
+        require(Robot.Level(tokenId) > 0, "Error: Robot Level is 0");
 
         LearnData storage data = DataUserLearn[user]; 
         require(data.StartBlockLearn < block.number, "Error StartLearning: Time out");
@@ -246,11 +209,7 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         emit OnStartLearn(user, tokenId, Robot.Level(tokenId), data.StartBlockLearn, data.PendingBlockLearn);
     }
 
-    /*
-    allows the user who called the function to stop their robot's learning process and
-    receive bonus tokens based on the number of blocks learned
-     */
-    function ForRobotNFTStopLearn() public whenNotPaused isHeroNFTJoinGame
+    function ForRobotNFTStopLearn() public whenNotPaused isHeroNFTJoinGame isNotUpgradeRobot
     {
         address user = msg.sender;
 
@@ -350,10 +309,6 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         }
     }
 
-    /**
-    rewards a specified 'user' with bonus tokens based on the level of their robot and
-    a specified 'totalBlockLearned' value. 
-     */
     function DoBonusToken(address user, uint256 totalBlockLearned) private
     {
         (,uint256 tokenId) = GameCotrollerContract.RobotNFTJoinGameOfUser(user);

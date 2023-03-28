@@ -7,6 +7,7 @@ import "./interfaces/ILearning.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 contract GameController is Ownable, IERC721Receiver, Pausable
@@ -24,16 +25,20 @@ contract GameController is Ownable, IERC721Receiver, Pausable
 
     uint256 public DelayBlockRobotNFTOutGame;
 
+    IERC20 public ERC20CreditToken;         // GRB
+    uint256 public PriceCreditMint = 1e18;  // 1GRB
+
     event OnHeroNFTJoinedGame(address indexed user, uint256 indexed heroId);
     event OnHeroNFTOutOfGame(address indexed user, uint256 indexed heroId);
     event OnRobotNFTJoinedGame(address indexed user, uint256 indexed robotId);
     event OnRobotNFTOutOfGame(address indexed user, uint256 indexed robotId);
 
-    constructor(IHero heroNFT, IRobot robotNFT, ILearning learningContract)
+    constructor(IHero heroNFT, IRobot robotNFT, ILearning learningContract, IERC20 erc20CreditToken)
     {
         HeroNFT = heroNFT;
         RobotNFT = robotNFT;
         LearningContract = learningContract;
+        ERC20CreditToken = erc20CreditToken;
     }
 
     struct RobotData
@@ -67,10 +72,32 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         DelayBlockRobotNFTOutGame = value;
     }
 
-    function ClaimRobotNFT() public whenNotPaused 
+    function SetERC20CreditToken(IERC20 erc20CreditToken) public onlyOwner 
+    {
+        ERC20CreditToken = erc20CreditToken;
+    }
+
+    function SetPriceCreditMint(uint256 value) public onlyOwner
+    {
+        PriceCreditMint = value;
+    }
+
+    function MintHeroNFT(uint256 teamId) public whenNotPaused
     {
         address to = _msgSender();
-        require(UserClaimedRobotNFT[to] == false, "Error ClaimRobotNFT: Claimed");
+        require(ERC20CreditToken.balanceOf(to) >= PriceCreditMint, "Error Mint: Invalid balance");
+        ERC20CreditToken.transferFrom(to, address(this), PriceCreditMint);
+
+        HeroNFT.Mint(to, teamId);
+
+        if(UserClaimedRobotNFT[to] == false)
+        {
+            ClaimRobotNFT(to);
+        }
+    }
+
+    function ClaimRobotNFT(address to) private whenNotPaused 
+    {
         RobotNFT.Mint(to);
         UserClaimedRobotNFT[to] = true;
     }
@@ -176,5 +203,29 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         emit OnRobotNFTOutOfGame(user, robotId);
 
         return true;
+    }
+
+    function GetDataUser(address user) public view returns (
+        uint256 heroId,
+        uint256 teamId,
+        uint256 robotId,
+        uint256 blockRobotJoin,
+        uint256 delayBlockRobotNFTOutGame,
+        uint256 blockNumber
+        )
+    {
+
+        heroId = HeroNFTJoinGameOfUser[user];
+        teamId = HeroNFT.TeamId(heroId);
+        robotId = RobotNFTJoinGameOfUser[user].RobotId;
+        blockRobotJoin = RobotNFTJoinGameOfUser[user].BlockJoin;
+        delayBlockRobotNFTOutGame = DelayBlockRobotNFTOutGame;
+            blockNumber = block.number;
+    }
+
+    function WithdrawCredit() public onlyOwner 
+    {
+        address to = owner();
+        ERC20CreditToken.transfer(to, ERC20CreditToken.balanceOf(address(this)));
     }
 }
