@@ -98,8 +98,13 @@ contract GameController is Ownable, IERC721Receiver, Pausable
 
     function ClaimRobotNFT(address to) private whenNotPaused 
     {
-        RobotNFT.Mint(to);
+        uint256 robotId = RobotNFT.Mint(address(this));
+
         UserClaimedRobotNFT[to] = true;
+
+        RobotData storage robotDataOfUser = RobotNFTJoinGameOfUser[to];
+        robotDataOfUser.BlockJoin = block.number;
+        robotDataOfUser.RobotId = robotId;
     }
 
     /*
@@ -133,7 +138,7 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     allows the user to join the game by transferring their robot NFT to the game contract, 
     and records the robot's data including the block number at which it joined 
      */
-    function LetRobotNFTJoinTheGame(uint256 robotId) public whenNotPaused
+    function LetRobotNFTJoinToGame(uint256 robotId) public whenNotPaused
     {
         address user = msg.sender;
         require(RobotNFT.ownerOf(robotId) == user, "Error JoinGame: Invalid token");
@@ -141,9 +146,9 @@ contract GameController is Ownable, IERC721Receiver, Pausable
 
         RobotNFT.safeTransferFrom(user, address(this), robotId);
 
-        RobotData storage robotData = RobotNFTJoinGameOfUser[user];
-        robotData.BlockJoin = block.number;
-        robotData.RobotId = robotId;
+        RobotData storage robotDataOfUser = RobotNFTJoinGameOfUser[user];
+        robotDataOfUser.BlockJoin = block.number;
+        robotDataOfUser.RobotId = robotId;
 
         emit OnRobotNFTJoinedGame(user, robotId);
     }
@@ -154,11 +159,11 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     the function stops the learning process. 
     The function returns an error if the robot could not be removed from the game.
     */
-    function LetRobotNFTOutOfTheGame() public 
+    function LetRobotNFTOutOfGame() public 
     {
         address user = msg.sender;
-        RobotData memory robotData = RobotNFTJoinGameOfUser[user];
-        require(robotData.RobotId != 0, "Error Robot NFT OutGame: Haven't joined the game");
+        RobotData memory robotDataOfUser = RobotNFTJoinGameOfUser[user];
+        require(robotDataOfUser.RobotId != 0, "Error Robot NFT OutGame: Haven't joined the game");
 
         (bool learning,,,) = LearningContract.DataUserLearn(user);
         require(learning == false, "Error Robot NFT OutGame: Learning");
