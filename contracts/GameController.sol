@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 contract GameController is Ownable, IERC721Receiver, Pausable
 {
-    IHero public  HeroNFT;
+    IHero public  HeroNFT;      // 
     IRobot public RobotNFT;
     ILearning public LearningContract;
 
@@ -84,25 +84,33 @@ contract GameController is Ownable, IERC721Receiver, Pausable
 
     function MintHeroNFT(uint256 teamId) public whenNotPaused
     {
-        address to = _msgSender();
-        require(ERC20CreditToken.balanceOf(to) >= PriceCreditMint, "Error Mint: Invalid balance");
-        ERC20CreditToken.transferFrom(to, address(this), PriceCreditMint);
+        address user = _msgSender();
+        require(ERC20CreditToken.balanceOf(user) >= PriceCreditMint, "Error Mint: Invalid balance");
+        ERC20CreditToken.transferFrom(user, address(this), PriceCreditMint);
 
-        HeroNFT.Mint(to, teamId);
-
-        if(UserClaimedRobotNFT[to] == false)
+        if(HeroNFTJoinGameOfUser[user] == 0)
         {
-            ClaimRobotNFT(to);
+            uint256 heroId = HeroNFT.Mint(address(this), teamId);
+            HeroNFTJoinGameOfUser[user] = heroId;
+        }
+        else
+        {
+            HeroNFT.Mint(user, teamId);
+        }
+
+        if(UserClaimedRobotNFT[user] == false)
+        {
+            ClaimRobotNFT(user);
         }
     }
 
-    function ClaimRobotNFT(address to) private whenNotPaused 
+    function ClaimRobotNFT(address user) private whenNotPaused 
     {
         uint256 robotId = RobotNFT.Mint(address(this));
 
-        UserClaimedRobotNFT[to] = true;
+        UserClaimedRobotNFT[user] = true;
 
-        RobotData storage robotDataOfUser = RobotNFTJoinGameOfUser[to];
+        RobotData storage robotDataOfUser = RobotNFTJoinGameOfUser[user];
         robotDataOfUser.BlockJoin = block.number;
         robotDataOfUser.RobotId = robotId;
     }
@@ -140,9 +148,9 @@ contract GameController is Ownable, IERC721Receiver, Pausable
      */
     function LetRobotNFTJoinToGame(uint256 robotId) public whenNotPaused
     {
-        address user = msg.sender;
+        address user = _msgSender();
         require(RobotNFT.ownerOf(robotId) == user, "Error JoinGame: Invalid token");
-        require(removeRobot(user) == true, "Error JoinGame: remove");
+        require(removeRobotNFT(user) == true, "Error JoinGame: remove");
 
         RobotNFT.safeTransferFrom(user, address(this), robotId);
 
@@ -161,13 +169,13 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     */
     function LetRobotNFTOutOfGame() public 
     {
-        address user = msg.sender;
+        address user = _msgSender();
         RobotData memory robotDataOfUser = RobotNFTJoinGameOfUser[user];
         require(robotDataOfUser.RobotId != 0, "Error Robot NFT OutGame: Haven't joined the game");
 
         (bool learning,,,) = LearningContract.DataUserLearn(user);
         require(learning == false, "Error Robot NFT OutGame: Learning");
-        require(removeRobot(msg.sender) == true, "Error Robot NFT OutGame: removeRobot");
+        require(removeRobotNFT(user) == true, "Error Robot NFT OutGame: removeRobotNFT");
     }
 
     /** 
@@ -193,14 +201,14 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     removes the NFT robot of a specified 'user' from the game contract 
     if the robot has been in the game for a specified amount of time.
     */
-    function removeRobot(address user) private returns(bool)
+    function removeRobotNFT(address user) private returns(bool)
     {
         RobotData storage robotData = RobotNFTJoinGameOfUser[user];
         uint256 robotId = robotData.RobotId;
 
         if(robotId == 0) return true;
         
-        require(robotData.BlockJoin.add(DelayBlockRobotNFTOutGame) <= block.number, "Error removeRobot: Time out");
+        require(robotData.BlockJoin.add(DelayBlockRobotNFTOutGame) <= block.number, "Error removeRobotNFT: Time out");
         RobotNFT.safeTransferFrom(address(this), user, robotId);
 
         robotData.RobotId = 0;
@@ -211,7 +219,7 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     }
 
     function GetDataUser(address user) public view returns (
-        uint256 heroId,
+        uint256 avatarId,
         uint256 teamId,
         uint256 robotId,
         uint256 blockRobotJoin,
@@ -220,12 +228,12 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         )
     {
 
-        heroId = HeroNFTJoinGameOfUser[user];
-        teamId = HeroNFT.TeamId(heroId);
+        avatarId = HeroNFTJoinGameOfUser[user];
+        teamId = HeroNFT.TeamId(avatarId);
         robotId = RobotNFTJoinGameOfUser[user].RobotId;
         blockRobotJoin = RobotNFTJoinGameOfUser[user].BlockJoin;
         delayBlockRobotNFTOutGame = DelayBlockRobotNFTOutGame;
-            blockNumber = block.number;
+        blockNumber = block.number;
     }
 
     function WithdrawCredit() public onlyOwner 
