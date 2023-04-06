@@ -31,6 +31,16 @@ contract Treasury is Ownable, Pausable
         PacketsVeGRB[3] = 500e18;
     }
 
+    function PauseSystem() public onlyOwner 
+    {
+        _pause();
+    }
+
+    function UnpauseSystem() public onlyOwner
+    {
+        _unpause();
+    }
+
     function SetCyberCreditTokenContract(IERC20 cyberCreditTokenContract) public onlyOwner 
     {
         CyberCreditToken = cyberCreditTokenContract;
@@ -51,7 +61,7 @@ contract Treasury is Ownable, Pausable
         PacketsVeGRB[indexPacket] = amountPacket;
     }
 
-    function BuyPacket(uint256 indexPacket) public
+    function BuyPacket(uint256 indexPacket) public whenNotPaused
     {
         address user = _msgSender();
         uint256 amountTokenInput = PacketsVeGRB[indexPacket];

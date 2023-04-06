@@ -52,6 +52,16 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         return this.onERC721Received.selector;
     }
 
+    function PauseSystem() public onlyOwner 
+    {
+        _pause();
+    }
+
+    function UnpauseSystem() public onlyOwner
+    {
+        _unpause();
+    }
+
     function SetHeroNFT(IHero heroNFT) public onlyOwner 
     {
         HeroNFT = heroNFT;
