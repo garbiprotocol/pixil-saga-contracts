@@ -26,7 +26,10 @@ contract Quiz is Ownable
     uint256 public TotalQuestionContract = 10;
     uint256 public TotalQuestionOnDay = 3;
 
-    uint256 public BonusAnswerCorrect = 10;
+    uint256 public BonusAnswerCorrect = 10e18;
+
+    event OnDoQuestOnDay(address user, uint256 blockNumber);
+    event OnResultQuestion(uint256 totalNumberCorrect, uint256 totalBonus);
 
     struct Question
     {
@@ -109,11 +112,14 @@ contract Quiz is Ownable
 
         TimeTheNextToDoQuest[user] = block.number.add(DelayToDoQuest);
         BlockReturnDoQuestion[user] = block.number;
+
+        emit OnDoQuestOnDay(user, BlockReturnDoQuestion[user]);
     }
 
     function GetDataQuest(address user) public view returns(
         Question[] memory data,
         uint256 timeTheNextToDoQuest,
+        uint256 timeTheNextSubmit,
         uint256 delayToDoQuest,
         uint256 blockReturnDoQuestion
         )
@@ -146,6 +152,7 @@ contract Quiz is Ownable
         }
 
         timeTheNextToDoQuest = (TimeTheNextToDoQuest[user] < block.number) ? 0 : TimeTheNextToDoQuest[user].sub(block.number);
+        timeTheNextSubmit = TimeTheNextSubmit[user];
         delayToDoQuest = DelayToDoQuest;
         blockReturnDoQuestion = BlockReturnDoQuestion[user];
     }
@@ -175,6 +182,8 @@ contract Quiz is Ownable
 
         TimeTheNextSubmit[user] = TimeTheNextToDoQuest[user];
         BlockReturnSubmitQuestion[user] = block.number;
+
+        emit OnResultQuestion(totalNumberCorrect, totalNumberCorrect.mul(BonusAnswerCorrect));
     }
 
     function DoBonusToken(address user, uint256 totalNumberCorrect) private 

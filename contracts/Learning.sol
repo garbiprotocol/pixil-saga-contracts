@@ -24,9 +24,6 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     mapping(uint256 => uint256) public PendingBlockUpgradeLevelRobotNFT;
 
     // config
-    
-    //number of blocks a user has to wait before they can remove their NFT from the game.
-    uint256 public DelayBlockRobotNFTOutGame;
 
     //stores the price to upgrade each level of robot NFT.
     mapping(uint256 => uint256) public PriceUpgradeLevelRobotNFT; 
@@ -68,24 +65,23 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         TokenReward = tokenReward;
         
         // Test
-        DelayBlockRobotNFTOutGame = 50;
-        TotalBlockLearnEachTime = 30;       
-        DelayBlockLearnNextTime = 10;
+        TotalBlockLearnEachTime = 1024;       
+        DelayBlockLearnNextTime = 4096;
 
         PriceUpgradeLevelRobotNFT[0] = 0;
-        PriceUpgradeLevelRobotNFT[1] = 100e18;
-        PriceUpgradeLevelRobotNFT[2] = 200e18;
-        PriceUpgradeLevelRobotNFT[3] = 300e18;
+        PriceUpgradeLevelRobotNFT[1] = 5461e18;
+        PriceUpgradeLevelRobotNFT[2] = 65536e18;
+        PriceUpgradeLevelRobotNFT[3] = 131072e18;
 
         BlockUpgradeLevelRobotNFT[0] = 0;
-        BlockUpgradeLevelRobotNFT[1] = 100;
-        BlockUpgradeLevelRobotNFT[2] = 200;
-        BlockUpgradeLevelRobotNFT[3] = 300;
+        BlockUpgradeLevelRobotNFT[1] = 300;
+        BlockUpgradeLevelRobotNFT[2] = 7000;
+        BlockUpgradeLevelRobotNFT[3] = 28000;
 
-        RewardPerBlockOfLevel[0] = 5e17;
+        RewardPerBlockOfLevel[0] = 0;
         RewardPerBlockOfLevel[1] = 1e18;
-        RewardPerBlockOfLevel[2] = 2e18;
-        RewardPerBlockOfLevel[3] = 3e18;
+        RewardPerBlockOfLevel[2] = 4e18;
+        RewardPerBlockOfLevel[3] = 16e18;
 
         MaxLevelOfRobotNFTInGame = 3;
     }
@@ -136,11 +132,6 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         TokenReward = tokenReward;
     }
 
-    function SetDelayBlockRobotNFTOutGame(uint256 value) public onlyOwner 
-    {
-        DelayBlockRobotNFTOutGame = value;
-    }
-
     function SetMaxLevelOfRobotNFTinGame(uint256 maxLevelOfRobotNFTinGame) public onlyOwner 
     {
         MaxLevelOfRobotNFTInGame = maxLevelOfRobotNFTinGame;
@@ -169,6 +160,11 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         BlockUpgradeLevelRobotNFT[level] = quantityBlock;
     }
 
+    function SetDelayBlockLearnNextTime(uint256 newDelayBlockLearnNextTime) public onlyOwner 
+    {
+        DelayBlockLearnNextTime = newDelayBlockLearnNextTime;
+    }
+
     //user action
     function UpgradeLevelRobot() public whenNotPaused isHeroNFTJoinGame isNotUpgradeRobot
     {
@@ -179,7 +175,8 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         uint256 level = Robot.Level(tokenId);
         require(level < MaxLevelOfRobotNFTInGame, "Error UpgradeLevelRobot: Invalid level");
         require(TokenReward.balanceOf(user) >= PriceUpgradeLevelRobotNFT[level.add(1)], "Error UpgradeLevelRobot: Invalid balance");
-        
+        LearnData memory data = DataUserLearn[user];
+        require(data.Learning == false, "Error UpgradeLevelRobot: Learning");
         TokenReward.transferFrom(user, address(this), PriceUpgradeLevelRobotNFT[level.add(1)]);
 
         PendingBlockUpgradeLevelRobotNFT[tokenId] = block.number.add(BlockUpgradeLevelRobotNFT[level.add(1)]);

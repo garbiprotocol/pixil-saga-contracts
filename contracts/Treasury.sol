@@ -16,7 +16,9 @@ contract Treasury is Ownable, Pausable
     uint256 public MaxLengthPacketsVeGRB;
     mapping(uint256 => uint256) public PacketsVeGRB;
 
-    event OnBuyPacket(address user, uint256 indexPacket, uint256 amountTokenInputput);
+    uint256 public ConversionRate;
+
+    event OnBuyPacket(address user, uint256 indexPacket, uint256 amountTokenInputput, uint256 amountTokenOutput);
 
     constructor(IERC20 cyberCreditTokenContract, IERC20 veGRBTokenContract)
     {
@@ -24,11 +26,14 @@ contract Treasury is Ownable, Pausable
         veGRBToken = veGRBTokenContract;
 
         //test
+        ConversionRate = 49152;      // 1 veGRB = 49152 cc
+
         MaxLengthPacketsVeGRB  = 4;
         PacketsVeGRB[0] = 10e18;
         PacketsVeGRB[1] = 50e18;
-        PacketsVeGRB[2] = 200e18;
-        PacketsVeGRB[3] = 500e18;
+        PacketsVeGRB[2] = 100e18;
+        PacketsVeGRB[3] = 200e18;
+
     }
 
     function PauseSystem() public onlyOwner 
@@ -61,19 +66,27 @@ contract Treasury is Ownable, Pausable
         PacketsVeGRB[indexPacket] = amountPacket;
     }
 
+    function SetConversionRate(uint256 newConversionRate) public onlyOwner
+    {
+        ConversionRate = newConversionRate;
+    }
+
     function BuyPacket(uint256 indexPacket) public whenNotPaused
     {
         address user = _msgSender();
-        uint256 amountTokenInput = PacketsVeGRB[indexPacket];
-        require(amountTokenInput != 0, "Error BuyPacket: Invalid Packet");
-        require(CyberCreditToken.balanceOf(user) >= amountTokenInput, "Error BuyPacket: Invalid Balance CyberCredit");
-        require(amountTokenInput <= veGRBToken.balanceOf(address(this)),  "Error BuyPacket: Invalid Balance veGRB in Treasury");
+        require(indexPacket < MaxLengthPacketsVeGRB, "Error BuyPacket: Invalid Packet");
+
+        uint256 amountTokenOutput = PacketsVeGRB[indexPacket];
+        uint256 amountTokenInput = amountTokenOutput.mul(ConversionRate);
+
+        require(CyberCreditToken.balanceOf(user) >= amountTokenInput, "Error BuyPacket: Invalid Balance CyberCredit in wallet");
+        require(amountTokenOutput <= veGRBToken.balanceOf(address(this)),  "Error BuyPacket: Invalid Balance veGRB in Treasury");
 
         CyberCreditToken.transferFrom(user, address(this), amountTokenInput);
 
-        veGRBToken.transfer(user, amountTokenInput);
+        veGRBToken.transfer(user, amountTokenOutput);
 
-        emit OnBuyPacket(user, indexPacket, amountTokenInput);
+        emit OnBuyPacket(user, indexPacket, amountTokenInput, amountTokenOutput);
     }
 
     function GetData() public view returns(uint256 balanceTreasury, uint256[] memory amountPacket)
