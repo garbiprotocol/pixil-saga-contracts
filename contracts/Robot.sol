@@ -68,7 +68,7 @@ contract Robot is ERC721Enumerable, Ownable, Pausable
 
     function Burn(uint256 tokenId) public whenNotPaused virtual
     {
-        require(_isApprovedOrOwner(msg.sender, tokenId), "Burn caller is not owner nor approved");
+        require(_isApprovedOrOwner(msg.sender, tokenId), "Burn caller is not owner not approved");
         _burn(tokenId);
     }
 

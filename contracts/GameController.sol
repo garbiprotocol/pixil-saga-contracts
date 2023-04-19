@@ -4,6 +4,8 @@ pragma solidity ^0.8.0;
 import "./interfaces/IHero.sol";
 import "./interfaces/IRobot.sol";
 import "./interfaces/ILearning.sol";
+import "./interfaces/IWhiteList.sol";
+
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
@@ -12,7 +14,8 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 contract GameController is Ownable, IERC721Receiver, Pausable
 {
-    IHero public  HeroNFT;      // 
+    IWhiteList public WhiteList;
+    IHero public  HeroNFT;       
     IRobot public RobotNFT;
     ILearning public LearningContract;
 
@@ -47,6 +50,15 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         uint256 RobotId; // the ID of the NFT robot
     }
 
+    modifier onlyWhiteList()
+    {
+        if(msg.sender != tx.origin)
+        {
+            require(WhiteList.whitelisted(msg.sender) == true, "invalid whitelist");
+        }
+        _;
+    }
+
     function onERC721Received(address, address, uint256, bytes memory) public virtual override returns (bytes4) 
     {
         return this.onERC721Received.selector;
@@ -62,19 +74,24 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         _unpause();
     }
 
-    function SetHeroNFT(IHero heroNFT) public onlyOwner 
+    function SetWhiteListcontract(IWhiteList addressWhiteList) public onlyOwner 
     {
-        HeroNFT = heroNFT;
+        WhiteList = addressWhiteList;
     }
 
-    function SetRobotNFT(IRobot robotNFT) public onlyOwner 
+    function SetHeroNFTContract(IHero addressHeroNFT) public onlyOwner 
     {
-        RobotNFT = robotNFT;
+        HeroNFT = addressHeroNFT;
     }
 
-    function SetLearningContract(ILearning learningContract) public onlyOwner 
+    function SetRobotNFTContract(IRobot addressRobotNFT) public onlyOwner 
     {
-        LearningContract = learningContract;
+        RobotNFT = addressRobotNFT;
+    }
+
+    function SetLearningContract(ILearning addressLearningContract) public onlyOwner 
+    {
+        LearningContract = addressLearningContract;
     }
 
     function SetDelayBlockRobotNFTOutGame(uint256 value) public onlyOwner
@@ -92,7 +109,7 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         PriceCreditMint = value;
     }
 
-    function MintHeroNFT(uint256 teamId) public whenNotPaused
+    function MintHeroNFT(uint256 teamId) public whenNotPaused onlyWhiteList
     {
         address user = _msgSender();
         require(ERC20CreditToken.balanceOf(user) >= PriceCreditMint, "Error Mint: Invalid balance");
@@ -128,7 +145,7 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     /*
     allows the user to join the game by transferring their Hero NFT to the game contract.
     */
-    function LetHeroNFTJoinToGame(uint256 heroId) public whenNotPaused
+    function LetHeroNFTJoinToGame(uint256 heroId) public whenNotPaused onlyWhiteList
     {
         address user = _msgSender();
         require(HeroNFT.ownerOf(heroId) == user, "Error JoinHeroNFTToGame: Invalid HeroId");
@@ -148,7 +165,6 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     {
         address user = _msgSender();
 
-        require(HeroNFTJoinGameOfUser[user] > 0, "Error removeHeroNFTOfGame: Invalid HeroId");
         require(removeHeroNFT(user) == true, "LetHeroNFTOutOfGame: RemoveHeroNFT");   
     }
 
@@ -156,7 +172,7 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     allows the user to join the game by transferring their robot NFT to the game contract, 
     and records the robot's data including the block number at which it joined 
      */
-    function LetRobotNFTJoinToGame(uint256 robotId) public whenNotPaused
+    function LetRobotNFTJoinToGame(uint256 robotId) public whenNotPaused onlyWhiteList
     {
         address user = _msgSender();
         require(RobotNFT.ownerOf(robotId) == user, "Error JoinGame: Invalid token");

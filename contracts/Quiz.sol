@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./interfaces/IQuestionData.sol";
 import "./interfaces/IGameController.sol";
+
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -29,7 +30,7 @@ contract Quiz is Ownable
     uint256 public BonusAnswerCorrect = 10e18;
 
     event OnDoQuestOnDay(address user, uint256 blockNumber);
-    event OnResultQuestion(uint256 totalNumberCorrect, uint256 totalBonus);
+    event OnResultQuestion(uint256 totalAnswerCorrect, uint256 totalBonus);
 
     struct Question
     {
@@ -163,7 +164,7 @@ contract Quiz is Ownable
         require(block.number > TimeTheNextSubmit[user], "Error Submit Question: It's not time to submit yet");
         require(block.number <= TimeTheNextToDoQuest[user], "Error Submit Question: submission timeout");
 
-        uint256 totalNumberCorrect = 0;
+        uint256 totalAnswerCorrect = 0;
         for(uint256 indexQuestion = 0; indexQuestion < TotalQuestionOnDay; indexQuestion++)
         {
             uint256 questionNumber = ListQuestionsUser[user][indexQuestion];
@@ -173,24 +174,24 @@ contract Quiz is Ownable
             if(resultAnswerQuestionOfUser == resultAnswerQuestionInContract)
             {
                 ListResultAnswersUser[user][indexQuestion] = 1; // 1: true, 0: false;
-                totalNumberCorrect = totalNumberCorrect.add(1);
+                totalAnswerCorrect = totalAnswerCorrect.add(1);
             }
             delete ListQuestionsUser[user][indexQuestion];
         }
 
-        if(totalNumberCorrect > 0) DoBonusToken(user, totalNumberCorrect);
+        if(totalAnswerCorrect > 0) DoBonusToken(user, totalAnswerCorrect);
 
         TimeTheNextSubmit[user] = TimeTheNextToDoQuest[user];
         BlockReturnSubmitQuestion[user] = block.number;
 
-        emit OnResultQuestion(totalNumberCorrect, totalNumberCorrect.mul(BonusAnswerCorrect));
+        emit OnResultQuestion(totalAnswerCorrect, totalAnswerCorrect.mul(BonusAnswerCorrect));
     }
 
-    function DoBonusToken(address user, uint256 totalNumberCorrect) private 
+    function DoBonusToken(address user, uint256 totalAnswerCorrect) private 
     {
-        if(TokenReward.balanceOf(address(this)) >= totalNumberCorrect.mul(BonusAnswerCorrect))
+        if(TokenReward.balanceOf(address(this)) >= totalAnswerCorrect.mul(BonusAnswerCorrect))
         {
-            TokenReward.transfer(user, totalNumberCorrect.mul(BonusAnswerCorrect));
+            TokenReward.transfer(user, totalAnswerCorrect.mul(BonusAnswerCorrect));
         }
         else
         {

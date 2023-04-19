@@ -15,7 +15,7 @@ contract Learning is Ownable, IERC721Receiver, Pausable
     using SafeMath for uint256;
     IGameController public GameCotrollerContract;
     IRobot public Robot;          // NFT learn
-    IERC20 public TokenReward;     // Reward
+    IERC20 public TokenReward;     // CyberCredit
 
     // stores the LearnData of each user.
     mapping(address => LearnData) public DataUserLearn;
@@ -122,30 +122,30 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         GameCotrollerContract = gameCotrollerContract;
     }
 
-    function SetRobot(IRobot robot)public onlyOwner 
+    function SetRobotNFTContract(IRobot addressRobotNFT)public onlyOwner 
     {
-        Robot = robot;
+        Robot = addressRobotNFT;
     }
 
-    function SetTokenReward(IERC20 tokenReward) public onlyOwner
+    function SetTokenRewardContract(IERC20 addressTokenReward) public onlyOwner
     {
-        TokenReward = tokenReward;
+        TokenReward = addressTokenReward;
     }
 
-    function SetMaxLevelOfRobotNFTinGame(uint256 maxLevelOfRobotNFTinGame) public onlyOwner 
+    function SetMaxLevelOfRobotNFTinGame(uint256 newMaxLevelOfRobotNFTinGame) public onlyOwner 
     {
-        MaxLevelOfRobotNFTInGame = maxLevelOfRobotNFTinGame;
+        MaxLevelOfRobotNFTInGame = newMaxLevelOfRobotNFTinGame;
     }
 
-    function SetTotalBlockLearnEachTime(uint256 totalBlockLearnEachTime) public onlyOwner
+    function SetTotalBlockLearnEachTime(uint256 newTotalBlockLearnEachTime) public onlyOwner
     {
-        TotalBlockLearnEachTime = totalBlockLearnEachTime;
+        TotalBlockLearnEachTime = newTotalBlockLearnEachTime;
     }
 
-    function SetRewardPerBlockOfLevel(uint256 level, uint256 value) public onlyOwner 
+    function SetRewardPerBlockOfLevel(uint256 level, uint256 rewardPerBlock) public onlyOwner 
     {
         require(level <= MaxLevelOfRobotNFTInGame, "Invalid max level");
-        RewardPerBlockOfLevel[level] = value;
+        RewardPerBlockOfLevel[level] = rewardPerBlock;
     }
 
     function SetPriceUpgradeLevelRobotNFT(uint256 level, uint256 price) public onlyOwner

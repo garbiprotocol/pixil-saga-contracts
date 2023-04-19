@@ -58,6 +58,7 @@ contract HeroNFT is ERC721Enumerable, Ownable, Pausable
         BaseURI = baseURI;
     }
 
+    // only Gamecontroller
     function Mint(address to, uint256 teamId) public whenNotPaused returns(uint256)
     {
         require(msg.sender == Miner, "Error Mint: Invalid Miner");
@@ -74,7 +75,7 @@ contract HeroNFT is ERC721Enumerable, Ownable, Pausable
 
     function Burn(uint256 heroId) public whenNotPaused virtual
     {
-        require(_isApprovedOrOwner(msg.sender, heroId), "Burn caller is not owner nor approved");
+        require(_isApprovedOrOwner(msg.sender, heroId), "Burn caller is not owner not approved");
         _burn(heroId);
     }
 

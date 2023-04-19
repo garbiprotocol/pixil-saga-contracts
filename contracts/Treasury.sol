@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./interfaces/IWhiteList.sol";
+
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -10,6 +12,7 @@ contract Treasury is Ownable, Pausable
 {
     using SafeMath for uint256;
 
+    IWhiteList public WhiteList;
     IERC20 public CyberCreditToken;
     IERC20 public veGRBToken;
 
@@ -36,6 +39,15 @@ contract Treasury is Ownable, Pausable
 
     }
 
+    modifier onlyWhiteList()
+    {
+        if(msg.sender != tx.origin)
+        {
+            require(WhiteList.whitelisted(msg.sender) == true, "invalid whitelist");
+        }
+        _;
+    }
+
     function PauseSystem() public onlyOwner 
     {
         _pause();
@@ -44,6 +56,11 @@ contract Treasury is Ownable, Pausable
     function UnpauseSystem() public onlyOwner
     {
         _unpause();
+    }
+
+    function SetWhiteListcontract(IWhiteList addressWhiteList) public onlyOwner 
+    {
+        WhiteList = addressWhiteList;
     }
 
     function SetCyberCreditTokenContract(IERC20 cyberCreditTokenContract) public onlyOwner 
@@ -71,7 +88,7 @@ contract Treasury is Ownable, Pausable
         ConversionRate = newConversionRate;
     }
 
-    function BuyPacket(uint256 indexPacket) public whenNotPaused
+    function BuyPacket(uint256 indexPacket) public whenNotPaused onlyWhiteList
     {
         address user = _msgSender();
         require(indexPacket < MaxLengthPacketsVeGRB, "Error BuyPacket: Invalid Packet");
