@@ -91,7 +91,7 @@ contract Treasury is Ownable, Pausable
     function BuyPacket(uint256 indexPacket) public whenNotPaused onlyWhiteList
     {
         address user = _msgSender();
-        require(indexPacket < MaxLengthPacketsVeGRB, "Error BuyPacket: Invalid Packet");
+        require(indexPacket >= 0 && indexPacket < MaxLengthPacketsVeGRB, "Error BuyPacket: Invalid Packet");
 
         uint256 amountTokenOutput = PacketsVeGRB[indexPacket];
         uint256 amountTokenInput = amountTokenOutput.mul(ConversionRate);

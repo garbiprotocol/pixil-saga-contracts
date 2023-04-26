@@ -25,11 +25,13 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     mapping(address => RobotData) public RobotNFTJoinGameOfUser;
 
     mapping(address => bool) public UserClaimedRobotNFT;
+    
+    mapping(address => bool) public ListAddressMintFree;
 
     uint256 public DelayBlockRobotNFTOutGame;
 
     IERC20 public ERC20CreditToken;         // GRB
-    uint256 public PriceCreditMint = 1e18;  // 1GRB
+    uint256 public PriceCreditMint = 10e18;  // 10GRB
 
     event OnHeroNFTJoinedGame(address indexed user, uint256 indexed heroId);
     event OnHeroNFTOutOfGame(address indexed user, uint256 indexed heroId);
@@ -79,6 +81,22 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         WhiteList = addressWhiteList;
     }
 
+    function SetListAddressMintFree(address[] memory listAddress) public onlyOwner 
+    {
+        for(uint256 index = 0; index < listAddress.length; index ++)
+        {
+            ListAddressMintFree[listAddress[index]] = true;
+        }
+    }
+
+    function RemoveListAddressMintFree(address[] memory listAddress) public onlyOwner 
+    {
+        for(uint256 index = 0; index < listAddress.length; index ++)
+        {
+            ListAddressMintFree[listAddress[index]] = false;
+        }
+    }
+
     function SetHeroNFTContract(IHero addressHeroNFT) public onlyOwner 
     {
         HeroNFT = addressHeroNFT;
@@ -113,7 +131,10 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     {
         address user = _msgSender();
         require(ERC20CreditToken.balanceOf(user) >= PriceCreditMint, "Error Mint: Invalid balance");
-        ERC20CreditToken.transferFrom(user, address(this), PriceCreditMint);
+
+        uint256 amountTokenInput = ListAddressMintFree[user] == true ? 0 : PriceCreditMint;
+
+        ERC20CreditToken.transferFrom(user, address(this), amountTokenInput);
 
         if(HeroNFTJoinGameOfUser[user] == 0)
         {
