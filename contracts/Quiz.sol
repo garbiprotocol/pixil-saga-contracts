@@ -23,9 +23,9 @@ contract Quiz is Ownable
     mapping(address => uint256) public BlockReturnDoQuestion; // suport client
     mapping(address => uint256) public BlockReturnSubmitQuestion; // suport client
 
-    uint256 public DelayToDoQuest = 10;  // block
-    uint256 public TotalQuestionContract = 10;
-    uint256 public TotalQuestionOnDay = 3;
+    uint256 public DelayToDoQuest;  // block
+    uint256 public TotalQuestionContract;
+    uint256 public TotalQuestionOnDay;
 
     uint256 public BonusAnswerCorrect = 10e18;
 
@@ -45,6 +45,12 @@ contract Quiz is Ownable
     {
         QuestionDataContract = questionDataContract;
         TokenReward = tokenReward;
+
+        // config
+        DelayToDoQuest = 7168;
+        TotalQuestionContract =  20;
+        TotalQuestionOnDay = 3;
+        BonusAnswerCorrect = 5461e18;
     }
 
     modifier isHeroNFTJoinGame()

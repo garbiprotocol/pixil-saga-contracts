@@ -31,7 +31,7 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     uint256 public DelayBlockRobotNFTOutGame;
 
     IERC20 public ERC20CreditToken;         // GRB
-    uint256 public PriceCreditMint = 10e18;  // 10GRB
+    uint256 public PriceCreditMint = 9e18;  // 9GRB
 
     event OnHeroNFTJoinedGame(address indexed user, uint256 indexed heroId);
     event OnHeroNFTOutOfGame(address indexed user, uint256 indexed heroId);
@@ -44,6 +44,8 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         RobotNFT = robotNFT;
         LearningContract = learningContract;
         ERC20CreditToken = erc20CreditToken;
+
+        DelayBlockRobotNFTOutGame = 7000;   // 1 day
     }
 
     struct RobotData

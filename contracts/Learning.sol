@@ -64,7 +64,7 @@ contract Learning is Ownable, IERC721Receiver, Pausable
         Robot = robot;
         TokenReward = tokenReward;
         
-        // Test
+        // Config
         TotalBlockLearnEachTime = 1024;       
         DelayBlockLearnNextTime = 4096;
 

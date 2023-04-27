@@ -12,9 +12,7 @@ contract CyberCredit is ERC20Burnable, Ownable
 {
     mapping(address => bool) public isRecieve;
 
-    constructor() ERC20("CyberCredit", "Cyber"){
-        _mint(_msgSender(), 1000e18);
-    }
+    constructor() ERC20("CyberCredit", "Cyber") {}
 
     event EventClaimToken(address addressReceive , uint256 amount);
 
@@ -31,8 +29,8 @@ contract CyberCredit is ERC20Burnable, Ownable
 
     function ClaimToken(address addressRecieve, uint256 amount) public onlyOwner
     {
-        require(isRecieve[addressRecieve] == true, "invalids address");
-        require(amount > 0, "invalid amount");
+        require(isRecieve[addressRecieve] == true, "Error Claim CyberCredit: invalid address");
+        require(amount > 0, "Error Claim CyberCredit: invalid amount");
         _mint(addressRecieve, amount);
 
         emit EventClaimToken(addressRecieve, amount);

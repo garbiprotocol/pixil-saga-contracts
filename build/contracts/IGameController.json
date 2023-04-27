@@ -54,20 +54,20 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ninterface IGameController\n{\n    function HeroNFTJoinGameOfUser(address user) external view returns(uint256);\n    \n    function RobotNFTJoinGameOfUser(address user) external pure returns (\n        uint256 BlockJoin, // the block at which the NFT robot was added to the game\n        uint256 RobotId // the ID of the NFT robot\n    );\n\n\n}",
-  "sourcePath": "/Applications/projects/garbi-contracts/contracts/interfaces/IGameController.sol",
+  "sourcePath": "/Applications/projects/pixil-saga-contracts/contracts/interfaces/IGameController.sol",
   "ast": {
     "absolutePath": "project:/contracts/interfaces/IGameController.sol",
     "exportedSymbols": {
       "IGameController": [
-        3397
+        8651
       ]
     },
-    "id": 3398,
+    "id": 8652,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 3380,
+        "id": 8634,
         "literals": [
           "solidity",
           "^",
@@ -75,7 +75,7 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:13"
+        "src": "32:23:33"
       },
       {
         "abstract": false,
@@ -84,36 +84,36 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 3397,
+        "id": 8651,
         "linearizedBaseContracts": [
-          3397
+          8651
         ],
         "name": "IGameController",
-        "nameLocation": "67:15:13",
+        "nameLocation": "67:15:33",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "functionSelector": "cd503d09",
-            "id": 3387,
+            "id": 8641,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "HeroNFTJoinGameOfUser",
-            "nameLocation": "98:21:13",
+            "nameLocation": "98:21:33",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3383,
+              "id": 8637,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3382,
+                  "id": 8636,
                   "mutability": "mutable",
                   "name": "user",
-                  "nameLocation": "128:4:13",
+                  "nameLocation": "128:4:33",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3387,
-                  "src": "120:12:13",
+                  "scope": 8641,
+                  "src": "120:12:33",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -121,10 +121,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3381,
+                    "id": 8635,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "120:7:13",
+                    "src": "120:7:33",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -134,21 +134,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "119:14:13"
+              "src": "119:14:33"
             },
             "returnParameters": {
-              "id": 3386,
+              "id": 8640,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3385,
+                  "id": 8639,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3387,
-                  "src": "156:7:13",
+                  "scope": 8641,
+                  "src": "156:7:33",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -156,10 +156,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3384,
+                    "id": 8638,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "156:7:13",
+                    "src": "156:7:33",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -168,36 +168,36 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "155:9:13"
+              "src": "155:9:33"
             },
-            "scope": 3397,
-            "src": "89:76:13",
+            "scope": 8651,
+            "src": "89:76:33",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "functionSelector": "a2cf55de",
-            "id": 3396,
+            "id": 8650,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "RobotNFTJoinGameOfUser",
-            "nameLocation": "184:22:13",
+            "nameLocation": "184:22:33",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 3390,
+              "id": 8644,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3389,
+                  "id": 8643,
                   "mutability": "mutable",
                   "name": "user",
-                  "nameLocation": "215:4:13",
+                  "nameLocation": "215:4:33",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3396,
-                  "src": "207:12:13",
+                  "scope": 8650,
+                  "src": "207:12:33",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -205,10 +205,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 3388,
+                    "id": 8642,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "207:7:13",
+                    "src": "207:7:33",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -218,21 +218,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "206:14:13"
+              "src": "206:14:33"
             },
             "returnParameters": {
-              "id": 3395,
+              "id": 8649,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 3392,
+                  "id": 8646,
                   "mutability": "mutable",
                   "name": "BlockJoin",
-                  "nameLocation": "261:9:13",
+                  "nameLocation": "261:9:33",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3396,
-                  "src": "253:17:13",
+                  "scope": 8650,
+                  "src": "253:17:33",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -240,10 +240,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3391,
+                    "id": 8645,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "253:7:13",
+                    "src": "253:7:33",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -253,13 +253,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 3394,
+                  "id": 8648,
                   "mutability": "mutable",
                   "name": "RobotId",
-                  "nameLocation": "346:7:13",
+                  "nameLocation": "346:7:33",
                   "nodeType": "VariableDeclaration",
-                  "scope": 3396,
-                  "src": "338:15:13",
+                  "scope": 8650,
+                  "src": "338:15:33",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -267,10 +267,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 3393,
+                    "id": 8647,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "338:7:13",
+                    "src": "338:7:33",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -279,21 +279,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "243:143:13"
+              "src": "243:143:33"
             },
-            "scope": 3397,
-            "src": "175:212:13",
+            "scope": 8651,
+            "src": "175:212:33",
             "stateMutability": "pure",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 3398,
-        "src": "57:334:13",
+        "scope": 8652,
+        "src": "57:334:33",
         "usedErrors": []
       }
     ],
-    "src": "32:359:13"
+    "src": "32:359:33"
   },
   "compiler": {
     "name": "solc",
@@ -301,7 +301,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-04-04T07:44:01.233Z",
+  "updatedAt": "2023-04-27T01:48:40.814Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
