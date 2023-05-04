@@ -136,6 +136,11 @@ contract GameController is Ownable, IERC721Receiver, Pausable
 
         uint256 amountTokenInput = ListAddressMintFree[user] == true ? 0 : PriceCreditMint;
 
+        if(amountTokenInput == 0)
+        {
+            ListAddressMintFree[user] = false;
+        }
+
         ERC20CreditToken.transferFrom(user, address(this), amountTokenInput);
 
         if(HeroNFTJoinGameOfUser[user] == 0)

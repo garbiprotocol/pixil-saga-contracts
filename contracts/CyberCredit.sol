@@ -12,7 +12,7 @@ contract CyberCredit is ERC20Burnable, Ownable
 {
     mapping(address => bool) public isRecieve;
 
-    constructor() ERC20("CyberCredit", "Cyber") {}
+    constructor() ERC20("CyberCredit", "CC") {}
 
     event EventClaimToken(address addressReceive , uint256 amount);
 
