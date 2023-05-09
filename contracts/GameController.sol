@@ -33,6 +33,7 @@ contract GameController is Ownable, IERC721Receiver, Pausable
     IERC20 public ERC20CreditToken;         // GRB
     uint256 public PriceCreditMint = 9e18;  // 9GRB
 
+    event OnMint(address indexed user, uint256 heroId, uint256 teamId, uint256 indexed amount);
     event OnHeroNFTJoinedGame(address indexed user, uint256 indexed heroId);
     event OnHeroNFTOutOfGame(address indexed user, uint256 indexed heroId);
     event OnRobotNFTJoinedGame(address indexed user, uint256 indexed robotId);
@@ -147,10 +148,12 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         {
             uint256 heroId = HeroNFT.Mint(address(this), teamId);
             HeroNFTJoinGameOfUser[user] = heroId;
+            emit OnMint(user, heroId, teamId, amountTokenInput);
         }
         else
         {
-            HeroNFT.Mint(user, teamId);
+            uint256 heroId = HeroNFT.Mint(user, teamId);
+            emit OnMint(user, heroId, teamId, amountTokenInput);
         }
 
         if(UserClaimedRobotNFT[user] == false)
@@ -168,6 +171,24 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         RobotData storage robotDataOfUser = RobotNFTJoinGameOfUser[user];
         robotDataOfUser.BlockJoin = block.number;
         robotDataOfUser.RobotId = robotId;
+    }
+
+    function MigrateData(address user, uint256 teamId, uint256 levelRobot) public onlyOwner
+    {
+        uint256 heroId = HeroNFT.Mint(address(this), teamId);
+        HeroNFTJoinGameOfUser[user] = heroId;
+
+        uint256 robotId = RobotNFT.Mint(address(this));
+        UserClaimedRobotNFT[user] = true;
+
+        RobotData storage robotDataOfUser = RobotNFTJoinGameOfUser[user];
+        robotDataOfUser.BlockJoin = block.number;
+        robotDataOfUser.RobotId = robotId;
+
+        for(uint256 index = 0; index < levelRobot; index++)
+        {
+            RobotNFT.UpgradeLevel(robotId);
+        }
     }
 
     /*

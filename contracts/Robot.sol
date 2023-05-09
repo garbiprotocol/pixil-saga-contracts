@@ -13,11 +13,12 @@ contract Robot is ERC721Enumerable, Ownable, Pausable
     using Counters for Counters.Counter;
     Counters.Counter private TokenId;
 
-    mapping(address => bool) public Miner;
+    mapping(address => bool) public Operator;
 
     string public BaseURI;
 
     event OnMintNFT(address from, address to, uint256 tokenId);
+    event OnUpgradeLevelRobot(uint256 tokenId, uint256 newLevel);
 
     mapping(uint256 => uint256) public Level;
 
@@ -35,16 +36,16 @@ contract Robot is ERC721Enumerable, Ownable, Pausable
         _unpause();
     }
 
-    function SetEnableMiner(address miner) public onlyOwner 
+    function SetEnableOperator(address addressOperator) public onlyOwner 
     {
-        require(Miner[miner] == false, "Error SetEnableMiner: Invalid miner");
-        Miner[miner] = true;
+        require(Operator[addressOperator] == false, "Error SetEnableOperator: Invalid Operator");
+        Operator[addressOperator] = true;
     }
 
-    function SetDisableMiner(address miner) public onlyOwner
+    function SetDisableOperator(address addressOperator) public onlyOwner
     {
-        require(Miner[miner] == true, "Error SetDisableMiner: Invalid miner");
-        Miner[miner] = false;
+        require(Operator[addressOperator] == true, "Error SetEnableOperator: Invalid Operator");
+        Operator[addressOperator] = false;
     }
 
     function SetBaseURI(string memory baseURI) public onlyOwner 
@@ -55,7 +56,7 @@ contract Robot is ERC721Enumerable, Ownable, Pausable
 
     function Mint(address to) public whenNotPaused returns(uint256)
     {
-        require(Miner[msg.sender] == true, "Error Mint: Invalid miner");
+        require(Operator[msg.sender] == true, "Error Mint: Invalid miner");
         TokenId.increment();
         uint256 newTokenId = TokenId.current();
         _safeMint(to, newTokenId);
@@ -74,9 +75,18 @@ contract Robot is ERC721Enumerable, Ownable, Pausable
 
     function UpgradeLevel(uint256 tokenId) public whenNotPaused
     {
-        require(Miner[msg.sender] == true, "Error UpgradeLevel");
+        require(Operator[msg.sender] == true, "Error UpgradeLevel");
         require(_exists(tokenId), "Error UpgradeLevel: Token does not exist");
         Level[tokenId] += 1;
+
+        emit OnUpgradeLevelRobot(tokenId, Level[tokenId]);
+    }
+
+    function SetLevelRobot(uint256 tokenId, uint256 level) public whenNotPaused 
+    {
+        require(Operator[msg.sender] == true, "Error SetLevelRobot");
+        require(_exists(tokenId), "Error UpgradeLevel: Token does not exist");
+        Level[tokenId] = level;
     }
 
     function _baseURI() internal view override returns(string memory)
