@@ -172,7 +172,8 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         robotDataOfUser.BlockJoin = block.number;
         robotDataOfUser.RobotId = robotId;
     }
-
+    
+    // bridge arbitrum one -> arbitrum nova
     function MigrateData(address user, uint256 teamId, uint256 levelRobot) public onlyOwner
     {
         uint256 heroId = HeroNFT.Mint(address(this), teamId);
@@ -185,10 +186,7 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         robotDataOfUser.BlockJoin = block.number;
         robotDataOfUser.RobotId = robotId;
 
-        for(uint256 index = 0; index < levelRobot; index++)
-        {
-            RobotNFT.UpgradeLevel(robotId);
-        }
+        RobotNFT.SetLevelRobot(robotId, levelRobot);
     }
 
     /*

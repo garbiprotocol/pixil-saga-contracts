@@ -137,4 +137,6 @@ interface IRobot is IERC721
 
     function UpgradeLevel(uint256 tokenId) external;
 
+    function SetLevelRobot(uint256 tokenId, uint256 level) external;
+
 } 
