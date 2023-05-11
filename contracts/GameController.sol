@@ -30,10 +30,10 @@ contract GameController is Ownable, IERC721Receiver, Pausable
 
     uint256 public DelayBlockRobotNFTOutGame;
 
-    IERC20 public ERC20CreditToken;         // GRB
-    uint256 public PriceCreditMint = 9e18;  // 9GRB
+    IERC20 public ERC20CreditToken;         
+    uint256 public PriceCreditMint = 9e18; 
 
-    event OnMint(address indexed user, uint256 heroId, uint256 teamId, uint256 indexed amount);
+    event OnMint(address indexed sender, address indexed reciever, uint256 heroId, uint256 teamId, uint256 indexed amount);
     event OnHeroNFTJoinedGame(address indexed user, uint256 indexed heroId);
     event OnHeroNFTOutOfGame(address indexed user, uint256 indexed heroId);
     event OnRobotNFTJoinedGame(address indexed user, uint256 indexed robotId);
@@ -130,45 +130,44 @@ contract GameController is Ownable, IERC721Receiver, Pausable
         PriceCreditMint = value;
     }
 
-    function MintHeroNFT(uint256 teamId) public whenNotPaused onlyWhiteList
+    function MintHeroNFT(address receiver, uint256 teamId) public whenNotPaused onlyWhiteList
     {
-        address user = _msgSender();
-        require(ERC20CreditToken.balanceOf(user) >= PriceCreditMint, "Error Mint: Invalid balance");
+        address sender = _msgSender();
 
-        uint256 amountTokenInput = ListAddressMintFree[user] == true ? 0 : PriceCreditMint;
-
+        uint256 amountTokenInput = ListAddressMintFree[receiver] == true ? 0 : PriceCreditMint;
         if(amountTokenInput == 0)
         {
-            ListAddressMintFree[user] = false;
+            ListAddressMintFree[receiver] = false;
         }
 
-        ERC20CreditToken.transferFrom(user, address(this), amountTokenInput);
+        require(ERC20CreditToken.balanceOf(sender) >= amountTokenInput, "Error Mint: Invalid balance");
+        ERC20CreditToken.transferFrom(sender, address(this), amountTokenInput);
 
-        if(HeroNFTJoinGameOfUser[user] == 0)
+        if(HeroNFTJoinGameOfUser[receiver] == 0)
         {
             uint256 heroId = HeroNFT.Mint(address(this), teamId);
-            HeroNFTJoinGameOfUser[user] = heroId;
-            emit OnMint(user, heroId, teamId, amountTokenInput);
+            HeroNFTJoinGameOfUser[receiver] = heroId;
+            emit OnMint(sender, receiver, heroId, teamId, amountTokenInput);
         }
         else
         {
-            uint256 heroId = HeroNFT.Mint(user, teamId);
-            emit OnMint(user, heroId, teamId, amountTokenInput);
+            uint256 heroId = HeroNFT.Mint(receiver, teamId);
+            emit OnMint(sender, receiver, heroId, teamId, amountTokenInput);
         }
 
-        if(UserClaimedRobotNFT[user] == false)
+        if(UserClaimedRobotNFT[receiver] == false)
         {
-            ClaimRobotNFT(user);
+            ClaimRobotNFT(receiver);
         }
     }
 
-    function ClaimRobotNFT(address user) private whenNotPaused 
+    function ClaimRobotNFT(address receiver) private whenNotPaused 
     {
         uint256 robotId = RobotNFT.Mint(address(this));
 
-        UserClaimedRobotNFT[user] = true;
+        UserClaimedRobotNFT[receiver] = true;
 
-        RobotData storage robotDataOfUser = RobotNFTJoinGameOfUser[user];
+        RobotData storage robotDataOfUser = RobotNFTJoinGameOfUser[receiver];
         robotDataOfUser.BlockJoin = block.number;
         robotDataOfUser.RobotId = robotId;
     }
