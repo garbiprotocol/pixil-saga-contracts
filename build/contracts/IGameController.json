@@ -43,9 +43,59 @@
       ],
       "stateMutability": "pure",
       "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "PriceCreditMint",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "ListAddressMintFree",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "teamId",
+          "type": "uint256"
+        }
+      ],
+      "name": "MintHeroNFT",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"HeroNFTJoinGameOfUser\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"RobotNFTJoinGameOfUser\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"BlockJoin\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"RobotId\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IGameController.sol\":\"IGameController\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IGameController.sol\":{\"keccak256\":\"0x20b4f221704f53ca886cf8e1f344310a88f108056c8785cec2e5ca9f131175eb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e9bcb1eba6aea94655348f3807c8295067d01ccf3bccb5f2956a6677fd76d3fe\",\"dweb:/ipfs/QmVn8bFgoaE6QkNHy4zPDnPk5z8aAbuGZYNyafVqZsjPJN\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"HeroNFTJoinGameOfUser\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"ListAddressMintFree\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"teamId\",\"type\":\"uint256\"}],\"name\":\"MintHeroNFT\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"PriceCreditMint\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"RobotNFTJoinGameOfUser\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"BlockJoin\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"RobotId\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IGameController.sol\":\"IGameController\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IGameController.sol\":{\"keccak256\":\"0x5870a923facec294b81e68aa65f4f64b17da29f8e0937fc26daf8d852fedd3e7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://60fd535267fa0b74fcc23a3eac5950ba36bfd6a60ed4332a45c4f88b2128db2a\",\"dweb:/ipfs/Qmf5HtrL11c3PQrxDVtHv1CYxGE3MhNBmFXUHhEwzsUQyj\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -53,21 +103,21 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ninterface IGameController\n{\n    function HeroNFTJoinGameOfUser(address user) external view returns(uint256);\n    \n    function RobotNFTJoinGameOfUser(address user) external pure returns (\n        uint256 BlockJoin, // the block at which the NFT robot was added to the game\n        uint256 RobotId // the ID of the NFT robot\n    );\n\n\n}",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ninterface IGameController\n{\n    // Get\n    function HeroNFTJoinGameOfUser(address user) external view returns(uint256);\n    \n    function RobotNFTJoinGameOfUser(address user) external pure returns (\n        uint256 BlockJoin, // the block at which the NFT robot was added to the game\n        uint256 RobotId // the ID of the NFT robot\n    );\n\n    function PriceCreditMint() external view returns(uint256);\n\n    function ListAddressMintFree(address user) external view returns(bool);\n\n    // Call\n    function MintHeroNFT(address receiver, uint256 teamId) external;\n\n\n}",
   "sourcePath": "/Applications/projects/pixil-saga-contracts/contracts/interfaces/IGameController.sol",
   "ast": {
     "absolutePath": "project:/contracts/interfaces/IGameController.sol",
     "exportedSymbols": {
       "IGameController": [
-        8651
+        2920
       ]
     },
-    "id": 8652,
+    "id": 2921,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8634,
+        "id": 2884,
         "literals": [
           "solidity",
           "^",
@@ -75,7 +125,7 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:33"
+        "src": "32:23:11"
       },
       {
         "abstract": false,
@@ -84,36 +134,36 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 8651,
+        "id": 2920,
         "linearizedBaseContracts": [
-          8651
+          2920
         ],
         "name": "IGameController",
-        "nameLocation": "67:15:33",
+        "nameLocation": "67:15:11",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "functionSelector": "cd503d09",
-            "id": 8641,
+            "id": 2891,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "HeroNFTJoinGameOfUser",
-            "nameLocation": "98:21:33",
+            "nameLocation": "109:21:11",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 8637,
+              "id": 2887,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8636,
+                  "id": 2886,
                   "mutability": "mutable",
                   "name": "user",
-                  "nameLocation": "128:4:33",
+                  "nameLocation": "139:4:11",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8641,
-                  "src": "120:12:33",
+                  "scope": 2891,
+                  "src": "131:12:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -121,10 +171,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 8635,
+                    "id": 2885,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "120:7:33",
+                    "src": "131:7:11",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -134,21 +184,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "119:14:33"
+              "src": "130:14:11"
             },
             "returnParameters": {
-              "id": 8640,
+              "id": 2890,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8639,
+                  "id": 2889,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8641,
-                  "src": "156:7:33",
+                  "scope": 2891,
+                  "src": "167:7:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -156,10 +206,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 8638,
+                    "id": 2888,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "156:7:33",
+                    "src": "167:7:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -168,36 +218,36 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "155:9:33"
+              "src": "166:9:11"
             },
-            "scope": 8651,
-            "src": "89:76:33",
+            "scope": 2920,
+            "src": "100:76:11",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "functionSelector": "a2cf55de",
-            "id": 8650,
+            "id": 2900,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "RobotNFTJoinGameOfUser",
-            "nameLocation": "184:22:33",
+            "nameLocation": "195:22:11",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 8644,
+              "id": 2894,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8643,
+                  "id": 2893,
                   "mutability": "mutable",
                   "name": "user",
-                  "nameLocation": "215:4:33",
+                  "nameLocation": "226:4:11",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8650,
-                  "src": "207:12:33",
+                  "scope": 2900,
+                  "src": "218:12:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -205,10 +255,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 8642,
+                    "id": 2892,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "207:7:33",
+                    "src": "218:7:11",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -218,21 +268,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "206:14:33"
+              "src": "217:14:11"
             },
             "returnParameters": {
-              "id": 8649,
+              "id": 2899,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 8646,
+                  "id": 2896,
                   "mutability": "mutable",
                   "name": "BlockJoin",
-                  "nameLocation": "261:9:33",
+                  "nameLocation": "272:9:11",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8650,
-                  "src": "253:17:33",
+                  "scope": 2900,
+                  "src": "264:17:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -240,10 +290,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 8645,
+                    "id": 2895,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "253:7:33",
+                    "src": "264:7:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -253,13 +303,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 8648,
+                  "id": 2898,
                   "mutability": "mutable",
                   "name": "RobotId",
-                  "nameLocation": "346:7:33",
+                  "nameLocation": "357:7:11",
                   "nodeType": "VariableDeclaration",
-                  "scope": 8650,
-                  "src": "338:15:33",
+                  "scope": 2900,
+                  "src": "349:15:11",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -267,10 +317,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 8647,
+                    "id": 2897,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "338:7:33",
+                    "src": "349:7:11",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -279,21 +329,243 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "243:143:33"
+              "src": "254:143:11"
             },
-            "scope": 8651,
-            "src": "175:212:33",
+            "scope": 2920,
+            "src": "186:212:11",
             "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "d0396178",
+            "id": 2905,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "PriceCreditMint",
+            "nameLocation": "413:15:11",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2901,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "428:2:11"
+            },
+            "returnParameters": {
+              "id": 2904,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2903,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2905,
+                  "src": "453:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2902,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "453:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "452:9:11"
+            },
+            "scope": 2920,
+            "src": "404:58:11",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "62bcb165",
+            "id": 2912,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "ListAddressMintFree",
+            "nameLocation": "477:19:11",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2908,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2907,
+                  "mutability": "mutable",
+                  "name": "user",
+                  "nameLocation": "505:4:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2912,
+                  "src": "497:12:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2906,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "497:7:11",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "496:14:11"
+            },
+            "returnParameters": {
+              "id": 2911,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2910,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2912,
+                  "src": "533:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 2909,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "533:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "532:6:11"
+            },
+            "scope": 2920,
+            "src": "468:71:11",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "97634c12",
+            "id": 2919,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "MintHeroNFT",
+            "nameLocation": "566:11:11",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2917,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2914,
+                  "mutability": "mutable",
+                  "name": "receiver",
+                  "nameLocation": "586:8:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2919,
+                  "src": "578:16:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2913,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "578:7:11",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2916,
+                  "mutability": "mutable",
+                  "name": "teamId",
+                  "nameLocation": "604:6:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2919,
+                  "src": "596:14:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2915,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "596:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "577:34:11"
+            },
+            "returnParameters": {
+              "id": 2918,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "620:0:11"
+            },
+            "scope": 2920,
+            "src": "557:64:11",
+            "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 8652,
-        "src": "57:334:33",
+        "scope": 2921,
+        "src": "57:568:11",
         "usedErrors": []
       }
     ],
-    "src": "32:359:33"
+    "src": "32:593:11"
   },
   "compiler": {
     "name": "solc",
@@ -301,7 +573,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-04-27T01:48:40.814Z",
+  "updatedAt": "2023-05-11T07:59:48.361Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

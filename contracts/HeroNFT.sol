@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
-// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 // NFT
@@ -14,7 +13,7 @@ contract HeroNFT is ERC721Enumerable, Ownable, Pausable
     using Counters for Counters.Counter;
     Counters.Counter private HeroId;
 
-    address public Miner;   // GameController
+    address public Operator;   // GameController
 
     string public BaseURI;
 
@@ -41,9 +40,9 @@ contract HeroNFT is ERC721Enumerable, Ownable, Pausable
         _unpause();
     }
 
-    function SetMiner(address miner) public onlyOwner 
+    function SetOperator(address addressOperator) public onlyOwner 
     {
-        Miner = miner;
+        Operator = addressOperator;
     }
 
     function SetMaxTeamId(uint256 value) public onlyOwner 
@@ -61,7 +60,7 @@ contract HeroNFT is ERC721Enumerable, Ownable, Pausable
     // only Gamecontroller
     function Mint(address to, uint256 teamId) public whenNotPaused returns(uint256)
     {
-        require(msg.sender == Miner, "Error Mint: Invalid Miner");
+        require(msg.sender == Operator, "Error Mint: Invalid Miner");
         require(teamId >= 1 && teamId <= MaxTeamId, "Error Mint: Invalid teamId");
         HeroId.increment();
         uint256 newHeroId = HeroId.current();
